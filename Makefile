@@ -16,18 +16,24 @@ PARSER_DIR = $(SRC_DIR)/parsing
 EXEC_DIR = $(SRC_DIR)/exec
 SIGNAL_DIR = $(SRC_DIR)/signal
 BUILTIN_DIR = $(SRC_DIR)/builtin
+UTILS_DIR = $(SRC_DIR)/utils
 
 SRC_FILES = minishell.c
-PARSER_FILES = 
-EXEC_FILES = 
-SIGNAL_FILES = 
+PARSER_FILES = parser.c prompter.c tokens.c valid_quotes.c \
+		get_next_token.c get_token_type.c check_syntax.c \
+		error_syntax.c error_syntax_utils.c expand_tokens.c \
+		expand_tokens_utils.c clean_line.c
+EXEC_FILES = commands_setup.c commands_utils.c commands.c
+SIGNAL_FILES = signal.c
 BUILTIN_FILES = 
+UTILS_FILES = env_setup.c shell_setup.c utils_parsing.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES)) \
 	   $(addprefix $(PARSER_DIR)/, $(PARSER_FILES)) \
 	   $(addprefix $(EXEC_DIR)/, $(EXEC_FILES)) \
 	   $(addprefix $(SIGNAL_DIR)/, $(SIGNAL_FILES)) \
-	   $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES)) 
+	   $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES)) \
+	   $(addprefix $(UTILS_DIR)/, $(UTILS_FILES)) 
 
 OBJS = $(addprefix $(OBJ_DIR)/, $(patsubst %.c, %.o, $(subst $(SRC_DIR)/,,$(SRC))))
 
