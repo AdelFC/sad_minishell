@@ -74,7 +74,7 @@ int	main(int argc, char **argv, char **envp)
         {
             debug_print_tokens(sh->tokens);
             // exec_commands(sh->cmds, sh->env, &sh->last_status);
-            // free_commands(sh->cmds);
+            free_commands(sh->cmds);
             free_tokens(sh->tokens);
         }
         free(line);
