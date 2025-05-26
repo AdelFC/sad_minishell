@@ -12,50 +12,40 @@
 
 #include "ft_printf_error.h"
 
-void	ft_putchar(char c, int *value)
+void	ft_pputchar(char c, int *value)
 {
 	write(2, &c, 1);
 	(*value)++;
 }
 
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
-
-	i = 0;
-	while (str && str[i])
-		i++;
-	return (i);
-}
-
-void	ft_putstr(char *str, int *value)
+void	ft_pputstr(char *str, int *value)
 {
 	if (!str)
-		return (ft_putstr("(null)", value));
+		return (ft_pputstr("(null)", value));
 	while (*str)
-		ft_putchar(*str++, value);
+		ft_pputchar(*str++, value);
 }
 
-void	ft_putnbr(int nb, int *value)
+void	ft_pputnbr(int nb, int *value)
 {
 	if (nb == INT_MIN)
 	{
-		ft_putstr("-2147483648", value);
+		ft_pputstr("-2147483648", value);
 		return ;
 	}
 	if (nb < 0)
 	{
-		ft_putchar('-', value);
+		ft_pputchar('-', value);
 		nb = -nb;
 	}
 	if (nb >= 10)
-		ft_putnbr(nb / 10, value);
-	ft_putchar((nb % 10) + '0', value);
+		ft_pputnbr(nb / 10, value);
+	ft_pputchar((nb % 10) + '0', value);
 }
 
-void	ft_putnbr_unsigned(unsigned int nb, int *value)
+void	ft_pputnbr_unsigned(unsigned int nb, int *value)
 {
 	if (nb >= 10)
-		ft_putnbr_unsigned(nb / 10, value);
-	ft_putchar((nb % 10) + '0', value);
+		ft_pputnbr_unsigned(nb / 10, value);
+	ft_pputchar((nb % 10) + '0', value);
 }

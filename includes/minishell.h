@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 10:37:15 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:15:04 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,9 @@
 # define ERR_PWD_TOO_MANY_ARGS "pwd: too many arguments\n"
 # define ERR_PWD_CANNOT_CWD "pwd: cannot access current directory\n"
 
-# define ERR_UNSET_NO_ARGS "unset: not enough arguments\n"
-# define ERR_UNSET_NOT_FOUND "unset: did not find var\n"
+# define ERR_UNSET_NO_ARGS    "unset: not enough arguments\n"
+# define ERR_UNSET_NOT_FOUND  "unset: did not find var\n"
+# define ERR_EXPORT_VALID_ID  "export: %s: not a valid identifier\n"
 
 # define ERR_UNCLOSED_QUOTE "error: unclosed quote\n"
 
@@ -65,6 +66,10 @@
 # define ERR_TOKEN_PAREN_OPEN "minishell: syntax error near unexpected token `(`\n"
 # define ERR_TOKEN_NEWLINE "minishell: syntax error near unexpected token `newline`\n"
 # define ERR_UNEXPECTED_TOKEN "minishell: syntax error near unexpected token `%s`\n"
+
+#define ERR_DUP2 "minishell: dup2: %s\n"
+#define ERR_PIPE "minishell: pipe failed\n"
+#define ERR_FORK "minishell: fork failed\n"
 
 # define ERR_ENV_ARG "minishell: env: too many arguments\n"
 # define ERR_ENV_OPTIONS "minishell: env: options not supported\n"
@@ -129,6 +134,7 @@ typedef struct s_redir
 {
     int             type;
     char            *filename;
+	int             heredoc_fd;
     struct s_redir  *next;
 }               t_redir;
 
@@ -144,9 +150,20 @@ typedef struct s_shell
 {
     int             last_status;
     t_env           *env;
+	char			**envp;
     t_token         *tokens;
     t_command       *cmds;
 }               t_shell;
+
+typedef struct s_heredoc_utils
+{
+	char			filename[256];
+	int				fd_write;
+	int				fd_read;
+	char			*pid_str;
+	char			*cnt_str;
+	int				count;
+}				t_heredoc_utils;
 
 /*UTILS_STRUC*/
 
@@ -181,6 +198,7 @@ typedef struct s_expand_tok
 
 /*===== UTILS =====*/
 /*env_setup.c*/
+t_env					*new_env(const char *name, const char *value);
 t_env					*init_env(char **envp);
 void					free_env(t_env *env);
 
@@ -247,6 +265,35 @@ void					expand_tokens(t_token *tok, t_env *env_list, int last_status);
 
 /*===== BUILTINS =====*/
 
+/*exec_builtin.c*/
+int						is_builtin(const char *cmd);
+int						exec_builtin(char **argv, t_env **env);
+
+/*ft_cd.c*/
+int						ft_cd(char **argv, t_env **env);
+
+/*ft_cd_env.c*/
+char					*env_get(t_env *env, const char *name);
+int   					env_set(t_env **env, const char *name, const char *value);
+
+/*ft_echo.c*/
+int 					ft_echo(char **argv);
+
+/*ft_exit.c*/
+int						ft_exit(char **argv);
+
+/*ft_env.c*/
+int						ft_env(char **argv, t_env **env);
+
+/*ft_export.c*/
+int						ft_export(char **argv, t_env **env);
+
+/*ft_pwd.c*/
+int						ft_pwd(char **argv);
+
+/*ft_unset.c*/
+int ft_unset(char **argv, t_env **env);
+
 /*===== EXECUTION =====*/
 /*commands_setup.c*/
 void					free_commands(t_command *cmds);
@@ -258,6 +305,26 @@ int 					add_redir(t_command *cmd, int type, const char *filename);
 
 /*commands.c*/
 t_command 				*build_commands_from_tokens(t_token *tokens);
+
+/*handle_command_error.c*/
+void					handle_command_error(t_command *cmd, int err);
+
+/*exec.c*/
+int						exec_commands(t_shell *sh);
+
+/*path.c*/
+char					*join_path(const char *dir, const char *cmd);
+char					*find_path(const char *cmd, char **envp);
+
+/*redirections.c*/
+int						apply_redirections(t_redir *redir);
+
+/*heredoc.c*/
+void					handle_heredoc_input(const char *limiter, int fd);
+int						handle_heredoc(const char *limiter);
+
+/*pipex.c*/
+void					ft_pipe(t_shell *sh, int *last_status);
 
 /*===== SIGNAL =====*/
 void					handle_sigint(int sig);

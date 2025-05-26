@@ -6,13 +6,13 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 23:55:07 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/25 12:26:47 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 15:45:59 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_env	*new_env(const char *name, const char *value)
+t_env	*new_env(const char *name, const char *value)
 {
     t_env *node = malloc(sizeof(t_env));
     if (!node)

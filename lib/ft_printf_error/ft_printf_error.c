@@ -6,33 +6,33 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 16:43:13 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/17 16:43:21 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 15:52:12 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf_error.h"
 
-int	ft_printf_error_args(char c, va_list args, int *value)
+int	ft_pprintf_error_args(char c, va_list args, int *value)
 {
 	if (c == 'c')
-		ft_putchar((char)va_arg(args, int), value);
+		ft_pputchar((char)va_arg(args, int), value);
 	else if (c == 's')
-		ft_putstr((char *)va_arg(args, char *), value);
+		ft_pputstr((char *)va_arg(args, char *), value);
 	else if (c == 'p')
-		ft_printf_error_p(va_arg(args, unsigned long long), "0123456789abcdef",
+		ft_pprintf_error_p(va_arg(args, unsigned long long), "0123456789abcdef",
 			value, 'p');
 	else if (c == 'd' || c == 'i')
-		ft_putnbr(va_arg(args, int), value);
+		ft_pputnbr(va_arg(args, int), value);
 	else if (c == 'u')
-		ft_putnbr_unsigned(va_arg(args, unsigned int), value);
+		ft_pputnbr_unsigned(va_arg(args, unsigned int), value);
 	else if (c == 'x')
-		ft_putnbr_base(va_arg(args, unsigned int), "0123456789abcdef", value,
+		ft_pputnbr_base(va_arg(args, unsigned int), "0123456789abcdef", value,
 			'x');
 	else if (c == 'X')
-		ft_putnbr_base(va_arg(args, unsigned int), "0123456789ABCDEF", value,
+		ft_pputnbr_base(va_arg(args, unsigned int), "0123456789ABCDEF", value,
 			'X');
 	else if (c == '%')
-		ft_putchar('%', value);
+		ft_pputchar('%', value);
 	return (1);
 }
 
@@ -49,11 +49,11 @@ int	ft_printf_error(const char *s, ...)
 	{
 		if (s[i] == '%' && s[i + 1])
 		{
-			ft_printf_error_args(s[i + 1], args, &value);
+			ft_pprintf_error_args(s[i + 1], args, &value);
 			i++;
 		}
 		else
-			ft_putchar(s[i], &value);
+			ft_pputchar(s[i], &value);
 		i++;
 	}
 	va_end(args);

@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 12:27:29 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 00:23:16 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:27:06 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ static void	free_redirs(t_redir *redir)
 	while (cur)
 	{
 		next = cur->next;
-		free(cur->filename);
+		if (cur->filename)
+			free(cur->filename);
 		free(cur);
 		cur = next;
 	}

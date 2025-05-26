@@ -1,40 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shell_setup.c                                      :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/25 12:36:57 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 12:54:08 by afodil-c         ###   ########.fr       */
+/*   Created: 2025/05/26 15:20:09 by afodil-c          #+#    #+#             */
+/*   Updated: 2025/05/26 15:33:25 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_shell	*init_shell(char **envp)
+/*
+** pwd: affiche le répertoire courant.
+** Erreur si des arguments sont passés.
+*/
+int ft_pwd(char **argv)
 {
-    t_shell	*sh = malloc(sizeof(t_shell));
-    if (!sh)
-        return (NULL);
-    sh->env = init_env(envp);
-    if (!sh->env)
-	{
-		free(sh);
-		return (NULL);
-	}
-    sh->envp = envp;
-    sh->tokens = NULL;
-    sh->cmds = NULL;
-    sh->last_status = 0;
-    return (sh);
-}
+    char *cwd;
 
-void	free_shell(t_shell *sh)
-{
-	if (!sh)
-		return ;
-	free_env(sh->env);
-	rl_clear_history();
-	free(sh);
+    (void)argv;
+    if (argv[1])
+    {
+        ft_printf_error(ERR_PWD_TOO_MANY_ARGS);
+        return (ERROR);
+    }
+    cwd = getcwd(NULL, 0);
+    if (!cwd)
+    {
+        ft_printf_error(ERR_PWD_CANNOT_CWD);
+        return (ERROR);
+    }
+    printf("%s\n", cwd);
+    free(cwd);
+    return (SUCCESS);
 }

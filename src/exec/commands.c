@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 00:40:13 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 10:31:51 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:30:27 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,25 +47,25 @@ t_command *build_commands_from_tokens(t_token *tokens)
         }
         else if (tokens->type == T_INFILE_OPERATOR)
         {
-            if (add_redir(current, T_INFILE_OPERATOR, tokens->next->value) == ERROR)
+            if (add_redir(current, T_INFILE_FILE, tokens->next->value) == ERROR)
                 return (NULL);
             tokens = tokens->next;
         }
         else if (tokens->type == T_OUTFILE_OPERATOR)
         {
-            if (add_redir(current, T_OUTFILE_OPERATOR, tokens->next->value) == ERROR)
+            if (add_redir(current, T_OUTFILE_FILE, tokens->next->value) == ERROR)
                 return (NULL);
             tokens = tokens->next;
         }
         else if (tokens->type == T_APPEND_OPERATOR)
         {
-            if (add_redir(current, T_APPEND_OPERATOR, tokens->next->value) == ERROR)
+            if (add_redir(current, T_APPEND_FILE, tokens->next->value) == ERROR)
                 return (NULL);
             tokens = tokens->next;
         }
         else if (tokens->type == T_HEREDOC_OPERATOR)
         {
-            if (add_redir(current, T_HEREDOC_OPERATOR, tokens->next->value) == ERROR)
+            if (add_redir(current, T_HEREDOC_DELIM, tokens->next->value) == ERROR)
                 return (NULL);
             tokens = tokens->next;
         }

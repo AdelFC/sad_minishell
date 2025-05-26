@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 00:13:16 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:15:48 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,30 @@ void debug_print_tokens(t_token *tokens)
     printf("\n");
 }
 
+static void prepare_heredocs(t_command *cmds)
+{
+    t_command *cmd = cmds;
+    t_redir   *redir;
+
+    while (cmd)
+    {
+        redir = cmd->redirs;
+        while (redir)
+        {
+            if (redir->type == T_HEREDOC_DELIM)
+            {
+                int fd = handle_heredoc(redir->filename);
+                if (fd < 0)
+                    ft_printf_error("minishell: heredoc failed\n");
+                redir->heredoc_fd = fd;
+            }
+            redir = redir->next;
+        }
+        cmd = cmd->next;
+    }
+}
+
+
 int	main(int argc, char **argv, char **envp)
 {
     t_shell *sh;
@@ -72,13 +96,13 @@ int	main(int argc, char **argv, char **envp)
         }
         if (parse_line(line, sh) == SUCCESS)
         {
-            debug_print_tokens(sh->tokens);
-            // exec_commands(sh->cmds, sh->env, &sh->last_status);
+            prepare_heredocs(sh->cmds);
+            exec_commands(sh);
             free_commands(sh->cmds);
             free_tokens(sh->tokens);
         }
         free(line);
     }
     free_shell(sh);
-    return (SUCCESS);
+    return (sh->last_status);
 }
