@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 19:13:40 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 22:15:38 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,8 @@ typedef struct s_clean_line
     int					i;
     int					j;
     int					space;
+	int     			in_squote;
+    int     			in_dquote;
 }					t_clean_line;
 
 typedef struct s_expand_tok
