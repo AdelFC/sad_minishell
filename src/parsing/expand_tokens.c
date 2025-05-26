@@ -6,13 +6,11 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 23:26:21 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/25 23:39:16 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 22:36:17 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
 
 /*
 ** Gère l'expansion d'une variable
@@ -20,17 +18,23 @@
 static void handle_dollar(t_expand_tok *v)
 {
     char *name = extract_var(v);
-    char *raw  = get_env_value(v->env_list, name);
-    char *dup  = ft_strdup(raw ? raw : "");
+    char *val;
     char *new;
 
+    if (name && *name)
+    {
+        new = build_new_res(v->res, name);
+        free(name);
+        if (!new) return;
+        free(v->res);
+        v->res = new;
+        return;
+    }
+    val = get_env_value(v->env_list, name);
     free(name);
-    if (!dup) return;
-
-    new = build_new_res(v->res, dup);
-    free(dup);
+    if (!val) val = "";
+    new = build_new_res(v->res, val);
     if (!new) return;
-
     free(v->res);
     v->res = new;
 }
@@ -54,8 +58,17 @@ static void process_char(t_expand_tok *v)
     }
     else if (c == '$' && !v->in_sq)
     {
-        v->i++;
-        handle_dollar(v);
+        char next = v->str[v->i + 1];
+        if (next == '?' || ft_isalnum(next) || next == '_')
+        {
+            v->i++;
+            handle_dollar(v);
+        }
+        else
+        {
+            append_char(v, '$');
+            v->i++;
+        }
     }
     else
     {
