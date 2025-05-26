@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 23:26:21 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 22:36:17 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 22:46:16 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ static void handle_dollar(t_expand_tok *v)
     char *val;
     char *new;
 
-    if (name && *name)
+    val = get_env_value(v->env_list, name);
+    if (!val && name && *name)
     {
         new = build_new_res(v->res, name);
         free(name);
@@ -30,7 +31,6 @@ static void handle_dollar(t_expand_tok *v)
         v->res = new;
         return;
     }
-    val = get_env_value(v->env_list, name);
     free(name);
     if (!val) val = "";
     new = build_new_res(v->res, val);
