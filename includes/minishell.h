@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 17:15:04 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:13:40 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,18 @@ typedef struct s_expand_tok
 	int					in_sq;
 	int					in_dq;
 	char				*res;
-}						t_expand_tok;
+}					t_expand_tok;
+
+typedef struct s_sort_alpha
+{
+    t_env				*sorted;
+    t_env				*cur;
+    t_env				*next;
+    t_env 				**insert_pos;
+    size_t				len_cur;
+    size_t				len_ins;
+    size_t				max_len;
+}   				t_sort_alpha;
 
 /*===== UTILS =====*/
 /*env_setup.c*/

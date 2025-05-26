@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:13 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 15:32:24 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:17:14 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ static int export_single(t_env **env, const char *arg)
         value = ft_strdup("");
     if (!value)
         return (free(name), ERROR);
-
     if (is_valid_identifier(name) == ERROR)
     {
         ft_printf_error(ERR_EXPORT_VALID_ID, name);
@@ -82,10 +81,12 @@ static int export_single(t_env **env, const char *arg)
 */
 static int export_loop(char **argv, t_env **env)
 {
-    int ret = SUCCESS;
+    int ret;
     int res;
-    int i = 1;
-
+    int i;
+    
+    i = 1;
+    ret = SUCCESS;
     while (argv[i])
     {
         res = export_single(env, argv[i]);
@@ -94,6 +95,48 @@ static int export_loop(char **argv, t_env **env)
         i++;
     }
     return (ret);
+}
+
+static void init_t_sort_alpha(t_sort_alpha *st, t_env *env)
+{
+    st->sorted     = NULL;
+    st->cur        = env;
+    st->next       = NULL;
+    st->insert_pos = NULL;
+    st->len_cur    = 0;
+    st->len_ins    = 0;
+    st->max_len    = 0;
+}
+
+static t_env *ft_sort_alpha(t_env *env)
+{
+    t_sort_alpha sort;
+
+    init_t_sort_alpha(&sort, env);
+    while (sort.cur)
+    {
+        sort.next       = sort.cur->next;
+        sort.insert_pos = &sort.sorted;
+        while (*sort.insert_pos)
+        {
+            sort.len_cur = ft_strlen(sort.cur->name);
+            sort.len_ins = ft_strlen((*sort.insert_pos)->name);
+            if (sort.len_cur > sort.len_ins)
+                sort.max_len = sort.len_cur;
+            else
+                sort.max_len = sort.len_ins;
+            if (ft_strncmp(sort.cur->name,
+                           (*sort.insert_pos)->name,
+                           sort.max_len) > 0)
+                sort.insert_pos = &(*sort.insert_pos)->next;
+            else
+                break;
+        }
+        sort.cur->next   = *sort.insert_pos;
+        *sort.insert_pos = sort.cur;
+        sort.cur         = sort.next;
+    }
+    return (sort.sorted);
 }
 
 /*
@@ -109,11 +152,11 @@ int ft_export(char **argv, t_env **env)
     i = 1;
     if (!argv[i])
     {
-        cur = *env;
+        cur = ft_sort_alpha(*env);
         while (cur)
         {
             if (cur->value)
-                printf("%s=%s\n", cur->name, cur->value);
+                printf("export %s=\"%s\"\n", cur->name, cur->value);
             cur = cur->next;
         }
         return (SUCCESS);

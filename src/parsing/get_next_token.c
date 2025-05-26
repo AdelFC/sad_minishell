@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 16:33:57 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 00:00:04 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 20:09:56 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,10 @@ char	*get_next_token(const char *line, int *i)
 		}
 		token_value = join_and_free(token_value, seg);
 		if (!token_value)
+		{
+			free(seg);
 			return (NULL);
+		}
 	}
 	return (token_value);
 }
