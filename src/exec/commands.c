@@ -6,21 +6,21 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 00:40:13 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 00:47:09 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 10:31:51 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int handle_pipe(t_command **current, t_command **head)
+static int handle_pipe(t_command **current)
 {
     t_command *next = new_command();
 
     if (!next)
-        return ERROR;
+        return (ERROR);
     (*current)->next = next;
     *current = next;
-    return SUCCESS;
+    return (SUCCESS);
 }
 
 /*
@@ -71,7 +71,7 @@ t_command *build_commands_from_tokens(t_token *tokens)
         }
         else if (tokens->type == T_PIPE)
         {
-            if (handle_pipe(&current, &head) == ERROR)
+            if (handle_pipe(&current) == ERROR)
                 return (NULL);
         }
         tokens = tokens->next;

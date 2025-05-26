@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 00:48:58 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/26 10:37:15 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,15 @@ typedef enum e_syntax_error
 	ERR_PAREN_UNMATCHED
 }						t_syntax_error;
 
+typedef enum e_redir_type
+{
+	REDIR_IN = 4,
+	REDIR_OUT = 6,
+	REDIR_APPEND = 8,
+	REDIR_HDOC = 10,
+}						t_redir_type;
+
+
 typedef struct s_env
 {
     char            *name;
@@ -127,6 +136,7 @@ typedef struct s_command
 {
     char            **argv;
     t_redir         *redirs;
+    int				fd[2];
     struct s_command *next;
 }               t_command;
 
@@ -242,6 +252,7 @@ void					expand_tokens(t_token *tok, t_env *env_list, int last_status);
 void					free_commands(t_command *cmds);
 
 /*commands_utils.c*/
+t_command               *new_command(void);
 int 					add_argv(t_command *cmd, const char *arg);
 int 					add_redir(t_command *cmd, int type, const char *filename);
 
