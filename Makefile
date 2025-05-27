@@ -91,8 +91,9 @@ fclean: clean
 
 re: fclean all
 
-fast: $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) $(CLIBS) -o $(NAME)
+fast:
+	@$(MAKE) --no-print-directory fclean > /dev/null 2>&1
+	@$(MAKE) --no-print-directory all    > /dev/null 2>&1
 	@echo "$(GREEN) Minishell compiled!"
 
 .PHONY: all clean fclean re
