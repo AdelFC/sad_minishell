@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 00:43:54 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 01:07:26 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,6 @@ static void	wait_for_single(pid_t pid, t_shell *sh)
 			sh->last_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
 			sh->last_status = 128 + WTERMSIG(status);
-	}
-}
-
-static void	close_heredoc_fds(t_redir *redir)
-{
-	while (redir)
-	{
-		if (redir->type == T_HEREDOC_DELIM && redir->heredoc_fd > 2)
-		{
-			close(redir->heredoc_fd);
-			redir->heredoc_fd = -1;
-		}
-		redir = redir->next;
 	}
 }
 
@@ -88,7 +75,7 @@ int	exec_single_builtin_cmd(t_command *cmd, t_shell *sh)
 	return (status);
 }
 
-int	ft_exec_commands(t_shell *sh)
+int	exec_commands(t_shell *sh)
 {
 	t_command	*cmd;
 
