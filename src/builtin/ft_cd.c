@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:19:17 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:12:39 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 22:21:04 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,40 +35,37 @@ static int	handle_cd_errors(char **argv, t_env **env, char **path_out)
 	return (SUCCESS);
 }
 
+static int	update_env_from_cwd(t_env **env,
+				const char *var_name, int print_err)
+{
+	char	*cwd;
+	int		ret;
+
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		if (print_err)
+			ft_printf_error(ERR_CD_CWD);
+		return (ERROR);
+	}
+	ret = env_set(env, var_name, cwd);
+	free(cwd);
+	if (ret == ERROR)
+		return (ERROR);
+	return (SUCCESS);
+}
+
 int	ft_cd(char **argv, t_env **env)
 {
-	char	*oldcwd;
-	char	*newcwd;
 	char	*target;
 
 	if (handle_cd_errors(argv, env, &target) == ERROR)
 		return (ERROR);
-	oldcwd = getcwd(NULL, 0);
-	if (!oldcwd)
-	{
-		ft_printf_error(ERR_CD_CWD);
-		return (ERROR);
-	}
 	if (chdir(target) != 0)
-	{
-		ft_printf_error(ERR_CD_NO_SUCH_DIR, target);
-		free(oldcwd);
+		return (ft_printf_error(ERR_CD_NO_SUCH_DIR, target), ERROR);
+	if (update_env_from_cwd(env, "OLDPWD", 1) == ERROR)
 		return (ERROR);
-	}
-	if (env_set(env, "OLDPWD", oldcwd) == ERROR)
-	{
-		free(oldcwd);
+	if (update_env_from_cwd(env, "PWD", 0) == ERROR)
 		return (ERROR);
-	}
-	free(oldcwd);
-	newcwd = getcwd(NULL, 0);
-	if (!newcwd)
-		return (ERROR);
-	if (env_set(env, "PWD", newcwd) == ERROR)
-	{
-		free(newcwd);
-		return (ERROR);
-	}
-	free(newcwd);
 	return (SUCCESS);
 }

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 15:41:11 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:12:23 by afodil-c         ###   ########.fr       */
+/*   Created: 2025/05/27 23:36:32 by afodil-c          #+#    #+#             */
+/*   Updated: 2025/05/27 23:36:35 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,15 @@ char	*env_get(t_env *env, const char *name)
 	return (NULL);
 }
 
+static int	update_env_value(t_env *cur, const char *value)
+{
+	free(cur->value);
+	cur->value = ft_strdup(value);
+	if (!cur->value)
+		return (ERROR);
+	return (SUCCESS);
+}
+
 int	env_set(t_env **env, const char *name, const char *value)
 {
 	t_env	*cur;
@@ -35,13 +44,7 @@ int	env_set(t_env **env, const char *name, const char *value)
 	while (cur)
 	{
 		if (!ft_strncmp(cur->name, name, ft_strlen(name) + 1))
-		{
-			free(cur->value);
-			cur->value = ft_strdup(value);
-			if (!cur->value)
-				return (ERROR);
-			return (SUCCESS);
-		}
+			return (update_env_value(cur, value));
 		if (!cur->next)
 			break ;
 		cur = cur->next;

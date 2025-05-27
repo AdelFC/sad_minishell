@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 18:37:32 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 22:53:18 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,16 @@
 # define ERR_UNCLOSED_QUOTE "error: unclosed quote\n"
 
 # define ERR_TOKEN_PIPE "minishell: syntax error near unexpected token `|`\n"
-# define ERR_TOKEN_DOUBLE_SEMICOLON "minishell: syntax error near unexpected token `;;`\n"
-# define ERR_TOKEN_PAREN_CLOSE "minishell: syntax error near unexpected token `)`\n"
-# define ERR_TOKEN_PAREN_OPEN "minishell: syntax error near unexpected token `(`\n"
-# define ERR_TOKEN_NEWLINE "minishell: syntax error near unexpected token `newline`\n"
-# define ERR_UNEXPECTED_TOKEN "minishell: syntax error near unexpected token `%s`\n"
+# define ERR_TOKEN_DOUBLE_SEMICOLON \
+	"minishell: syntax error near unexpected token `;;`\n"
+# define ERR_TOKEN_PAREN_CLOSE \
+	"minishell: syntax error near unexpected token `)`\n"
+# define ERR_TOKEN_PAREN_OPEN \
+	"minishell: syntax error near unexpected token `(`\n"
+# define ERR_TOKEN_NEWLINE \
+	"minishell: syntax error near unexpected token `newline`\n"
+# define ERR_UNEXPECTED_TOKEN \
+	"minishell: syntax error near unexpected token `%s`\n"
 
 # define ERR_DUP2 "minishell: dup2: %s\n"
 # define ERR_PIPE "minishell: pipe failed\n"
@@ -207,6 +212,13 @@ typedef struct s_sort_alpha
 	size_t				max_len;
 }						t_sort_alpha;
 
+typedef struct s_sort_utils
+{
+	int					swapped;
+	size_t				len;
+	t_env				*curr;
+}					t_sort_utils;
+
 /*===== UTILS =====*/
 /*env_setup.c*/
 t_env					*new_env(const char *name, const char *value);
@@ -301,6 +313,10 @@ int						ft_exit(char **argv, t_shell *sh);
 int						ft_env(char **argv, t_env **env);
 
 /*ft_export.c*/
+t_env					*sort_env_alpha(t_env *env);
+int						is_valid_identifier(const char *s);
+char					*get_var_name(const char *arg);
+int						export_with_value(const char *arg, t_env **env);
 int						ft_export(char **argv, t_env **env);
 
 /*ft_pwd.c*/
@@ -323,7 +339,8 @@ int						add_redir(t_command *cmd, int type,
 t_command				*build_commands_from_tokens(t_token *tokens);
 
 /*handle_command_error.c*/
-void					handle_command_error(t_shell *sh, t_command *cmd, int err);
+void					handle_command_error(t_shell *sh,
+							t_command *cmd, int err);
 
 /*exec.c*/
 int						exec_commands(t_shell *sh);
@@ -340,6 +357,14 @@ void					handle_heredoc_input(const char *limiter, int fd);
 int						handle_heredoc(const char *limiter);
 
 /*pipex.c*/
+
+void					process_first(t_command *cmd, t_shell *sh);
+void					setup_pipes(t_command *cmd, int prev_fd);
+void					process_middle(int prev_fd, t_command *cmd, t_shell *sh);
+void					process_last(int prev_fd, t_command *cmd, t_shell *sh);
+void					update_prev_fd(int *prev_fd, t_command *cur);
+void					handle_pipe_iteration(t_command *cur,
+							t_shell *sh, int prev_fd);
 void					ft_pipe(t_shell *sh, int *last_status);
 
 /*===== SIGNAL =====*/

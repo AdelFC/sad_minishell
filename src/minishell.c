@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 18:41:09 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 22:08:18 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,9 @@ static int	prepare_heredocs(t_command *cmds)
 			{
 				fd = handle_heredoc(redir->filename);
 				if (fd < 0)
-					return (ft_printf_error("minishell: heredoc failed\n"), ERROR);
-                free(redir->filename);
+					return (ft_printf_error("minishell: heredoc failed\n"),
+						ERROR);
+				free(redir->filename);
 				redir->filename = NULL;
 				redir->heredoc_fd = fd;
 			}
@@ -101,9 +102,9 @@ int	main(int argc, char **argv, char **envp)
 		{
 			if (prepare_heredocs(sh->cmds) == ERROR)
 			{
-			    sh->last_status = 1;
+				sh->last_status = 1;
 				free(line);
-				break;
+				break ;
 			}
 			exec_commands(sh);
 			free_commands(sh->cmds);

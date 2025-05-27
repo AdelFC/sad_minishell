@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 12:36:57 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 11:08:19 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 22:04:45 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void	free_shell(t_shell *sh)
 {
 	if (!sh)
 		return ;
-	free_commands(sh->cmds); // Ajouté : libère la liste des commandes restantes
-	free_tokens(sh->tokens); // Ajouté : libère la liste des tokens restants
+	free_commands(sh->cmds);
+	free_tokens(sh->tokens);
 	free_env(sh->env);
 	rl_clear_history();
 	free(sh);

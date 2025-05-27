@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:16 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 11:36:26 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 22:16:27 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,28 @@ static int	is_numeric(const char *s)
 	return (SUCCESS);
 }
 
+static int	count_exit_args(char **argv)
+{
+	int	i;
+	int	count;
+
+	i = 1;
+	count = 0;
+	while (argv[i])
+	{
+		count++;
+		i++;
+	}
+	return (count);
+}
+
 int	ft_exit(char **argv, t_shell *sh)
 {
 	long	code;
 	int		argc;
-	int		i;
 
 	code = 0;
-	argc = 0;
-	i = 1;
-	while (argv[i])
-	{
-		argc++;
-		i++;
-	}
+	argc = count_exit_args(argv);
 	if (argc > 1)
 		return (ft_printf_error(ERR_EXIT_TOO_MANY_ARGS), ERROR);
 	if (argc == 1)
@@ -54,7 +62,6 @@ int	ft_exit(char **argv, t_shell *sh)
 		{
 			ft_printf_error(ERR_EXIT_NUM_ARG, argv[1]);
 			free_shell(sh);
-			sh = NULL;
 			exit(2);
 		}
 		code = ft_atoi(argv[1]);

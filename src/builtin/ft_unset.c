@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:05 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:15:36 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 22:22:05 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,35 +38,42 @@ static int	remove_env_var(t_env **env_list, const char *name)
 	return (ERROR);
 }
 
+static int	process_unset_arg(const char *arg, t_env **env)
+{
+	int	res;
+
+	if (!arg[0] || !(ft_isalpha(arg[0]) || arg[0] == '_'))
+	{
+		ft_printf_error(ERR_EXPORT_VALID_ID, arg);
+		return (ERROR);
+	}
+	res = remove_env_var(env, arg);
+	if (res == ERROR)
+	{
+		ft_printf_error(ERR_UNSET_NOT_FOUND);
+		return (ERROR);
+	}
+	return (SUCCESS);
+}
+
 int	ft_unset(char **argv, t_env **env)
 {
 	int	i;
 	int	status;
-	int	res;
+	int	ret;
 
-	status = SUCCESS;
-	i = 1;
-	if (!argv[i])
+	if (!argv[1])
 	{
 		ft_printf_error(ERR_UNSET_NO_ARGS);
 		return (ERROR);
 	}
+	status = SUCCESS;
+	i = 1;
 	while (argv[i])
 	{
-		if (!argv[i][0] || !(ft_isalpha(argv[i][0]) || argv[i][0] == '_'))
-		{
-			ft_printf_error(ERR_EXPORT_VALID_ID, argv[i]);
+		ret = process_unset_arg(argv[i], env);
+		if (ret == ERROR)
 			status = ERROR;
-		}
-		else
-		{
-			res = remove_env_var(env, argv[i]);
-			if (res == ERROR)
-			{
-				ft_printf_error(ERR_UNSET_NOT_FOUND);
-				status = ERROR;
-			}
-		}
 		i++;
 	}
 	return (status);
