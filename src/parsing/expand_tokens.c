@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_tokens.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 23:26:21 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 09:53:24 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 11:15:57 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,22 +40,14 @@ static void	handle_dollar(t_expand_tok *v)
 	v->res = new;
 }
 
-static void	process_char(t_expand_tok *v)
+static void	process_char_core(t_expand_tok *v, char c)
 {
-	char	c;
 	char	next;
 
-	c = v->str[v->i];
 	if (c == '\'' && !v->in_dq)
-	{
 		v->in_sq = !v->in_sq;
-		v->i++;
-	}
 	else if (c == '"' && !v->in_sq)
-	{
 		v->in_dq = !v->in_dq;
-		v->i++;
-	}
 	else if (c == '$' && !v->in_sq)
 	{
 		next = v->str[v->i + 1];
@@ -63,19 +55,56 @@ static void	process_char(t_expand_tok *v)
 		{
 			v->i++;
 			handle_dollar(v);
+			return ;
 		}
-		else
-		{
-			append_char(v, '$');
-			v->i++;
-		}
+		append_char(v, '$');
 	}
 	else
-	{
 		append_char(v, c);
-		v->i++;
-	}
+	v->i++;
 }
+
+static void	process_char(t_expand_tok *v)
+{
+	process_char_core(v, v->str[v->i]);
+}
+
+// static void	process_char(t_expand_tok *v)
+// {
+// 	char	c;
+// 	char	next;
+
+// 	c = v->str[v->i];
+// 	if (c == '\'' && !v->in_dq)
+// 	{
+// 		v->in_sq = !v->in_sq;
+// 		v->i++;
+// 	}
+// 	else if (c == '"' && !v->in_sq)
+// 	{
+// 		v->in_dq = !v->in_dq;
+// 		v->i++;
+// 	}
+// 	else if (c == '$' && !v->in_sq)
+// 	{
+// 		next = v->str[v->i + 1];
+// 		if (next == '?' || ft_isalnum(next) || next == '_')
+// 		{
+// 			v->i++;
+// 			handle_dollar(v);
+// 		}
+// 		else
+// 		{
+// 			append_char(v, '$');
+// 			v->i++;
+// 		}
+// 	}
+// 	else
+// 	{
+// 		append_char(v, c);
+// 		v->i++;
+// 	}
+// }
 
 char	*expand_string(const char *s, t_env *env_list, int last_status)
 {

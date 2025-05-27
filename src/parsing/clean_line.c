@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clean_line.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 23:44:12 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 09:55:16 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 11:02:38 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,29 @@ static void	init_clean_line_vars(t_clean_line *var, char *line)
 	var->in_dquote = 0;
 }
 
+static void	clean_line_loop(t_clean_line *var)
+{
+	while (var->line[var->i])
+	{
+		if (var->line[var->i] == '\'' && !var->in_dquote)
+			var->in_squote = !var->in_squote;
+		else if (var->line[var->i] == '"' && !var->in_squote)
+			var->in_dquote = !var->in_dquote;
+		if ((unsigned char)var->line[var->i] < 32 && var->line[var->i] != '\t')
+			var->i++;
+		else if (is_operator(var->line[var->i]) == SUCCESS)
+			process_operator(var);
+		else if (is_space(var->line[var->i]) == SUCCESS && !var->in_squote
+			&& !var->in_dquote)
+		{
+			var->space = 1;
+			var->i++;
+		}
+		else
+			process_regular_char(var);
+	}
+}
+
 char	*clean_line(char *line)
 {
 	t_clean_line	var;
@@ -65,25 +88,40 @@ char	*clean_line(char *line)
 	if (!var.res)
 		return (NULL);
 	init_clean_line_vars(&var, line);
-	while (var.line[var.i])
-	{
-		if (var.line[var.i] == '\'' && !var.in_dquote)
-			var.in_squote = !var.in_squote;
-		else if (var.line[var.i] == '"' && !var.in_squote)
-			var.in_dquote = !var.in_dquote;
-		if ((unsigned char)var.line[var.i] < 32 && var.line[var.i] != '\t')
-			var.i++;
-		else if (is_operator(var.line[var.i]) == SUCCESS)
-			process_operator(&var);
-		else if (is_space(var.line[var.i]) == SUCCESS && !var.in_squote
-			&& !var.in_dquote)
-		{
-			var.space = 1;
-			var.i++;
-		}
-		else
-			process_regular_char(&var);
-	}
+	clean_line_loop(&var);
 	var.res[var.j] = '\0';
 	return (var.res);
 }
+
+// char	*clean_line(char *line)
+// {
+// 	t_clean_line	var;
+
+// 	if (!line)
+// 		return (NULL);
+// 	var.res = malloc(ft_strlen(line) * 2 + 1);
+// 	if (!var.res)
+// 		return (NULL);
+// 	init_clean_line_vars(&var, line);
+// 	while (var.line[var.i])
+// 	{
+// 		if (var.line[var.i] == '\'' && !var.in_dquote)
+// 			var.in_squote = !var.in_squote;
+// 		else if (var.line[var.i] == '"' && !var.in_squote)
+// 			var.in_dquote = !var.in_dquote;
+// 		if ((unsigned char)var.line[var.i] < 32 && var.line[var.i] != '\t')
+// 			var.i++;
+// 		else if (is_operator(var.line[var.i]) == SUCCESS)
+// 			process_operator(&var);
+// 		else if (is_space(var.line[var.i]) == SUCCESS && !var.in_squote
+// 			&& !var.in_dquote)
+// 		{
+// 			var.space = 1;
+// 			var.i++;
+// 		}
+// 		else
+// 			process_regular_char(&var);
+// 	}
+// 	var.res[var.j] = '\0';
+// 	return (var.res);
+// }

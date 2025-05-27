@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_syntax.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 22:41:06 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 09:54:25 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 11:04:53 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,27 +90,35 @@ int	error_double_semicolon(t_token *tokens)
 	return (SUCCESS);
 }
 
-int	error_parenthesis(t_token *tokens)
+static int	check_parenthesis_balance(t_token *tokens, int *open)
 {
 	t_token	*cur;
-	int		open;
 
 	cur = tokens;
-	open = 0;
 	while (cur)
 	{
 		if (cur->value && ft_strncmp(cur->value, "(", 2) == 0)
-			open++;
+			(*open)++;
 		else if (cur->value && ft_strncmp(cur->value, ")", 2) == 0)
 		{
-			if (open == 0)
-			{
-				ft_printf_error(ERR_TOKEN_PAREN_CLOSE);
+			if (*open == 0)
 				return (ERROR);
-			}
-			open--;
+			(*open)--;
 		}
 		cur = cur->next;
+	}
+	return (SUCCESS);
+}
+
+int	error_parenthesis(t_token *tokens)
+{
+	int	open;
+
+	open = 0;
+	if (check_parenthesis_balance(tokens, &open) == ERROR)
+	{
+		ft_printf_error(ERR_TOKEN_PAREN_CLOSE);
+		return (ERROR);
 	}
 	if (open > 0)
 	{
@@ -119,3 +127,33 @@ int	error_parenthesis(t_token *tokens)
 	}
 	return (SUCCESS);
 }
+
+// int	error_parenthesis(t_token *tokens)
+// {
+// 	t_token	*cur;
+// 	int		open;
+
+// 	cur = tokens;
+// 	open = 0;
+// 	while (cur)
+// 	{
+// 		if (cur->value && ft_strncmp(cur->value, "(", 2) == 0)
+// 			open++;
+// 		else if (cur->value && ft_strncmp(cur->value, ")", 2) == 0)
+// 		{
+// 			if (open == 0)
+// 			{
+// 				ft_printf_error(ERR_TOKEN_PAREN_CLOSE);
+// 				return (ERROR);
+// 			}
+// 			open--;
+// 		}
+// 		cur = cur->next;
+// 	}
+// 	if (open > 0)
+// 	{
+// 		ft_printf_error(ERR_TOKEN_PAREN_OPEN);
+// 		return (ERROR);
+// 	}
+// 	return (SUCCESS);
+// }
