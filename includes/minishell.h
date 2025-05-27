@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 22:15:38 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 09:49:27 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@
 # define ERR_PWD_TOO_MANY_ARGS "pwd: too many arguments\n"
 # define ERR_PWD_CANNOT_CWD "pwd: cannot access current directory\n"
 
-# define ERR_UNSET_NO_ARGS    "unset: not enough arguments\n"
-# define ERR_UNSET_NOT_FOUND  "unset: did not find var\n"
-# define ERR_EXPORT_VALID_ID  "export: %s: not a valid identifier\n"
+# define ERR_UNSET_NO_ARGS "unset: not enough arguments\n"
+# define ERR_UNSET_NOT_FOUND "unset: did not find var\n"
+# define ERR_EXPORT_VALID_ID "export: %s: not a valid identifier\n"
 
 # define ERR_UNCLOSED_QUOTE "error: unclosed quote\n"
 
@@ -67,9 +67,9 @@
 # define ERR_TOKEN_NEWLINE "minishell: syntax error near unexpected token `newline`\n"
 # define ERR_UNEXPECTED_TOKEN "minishell: syntax error near unexpected token `%s`\n"
 
-#define ERR_DUP2 "minishell: dup2: %s\n"
-#define ERR_PIPE "minishell: pipe failed\n"
-#define ERR_FORK "minishell: fork failed\n"
+# define ERR_DUP2 "minishell: dup2: %s\n"
+# define ERR_PIPE "minishell: pipe failed\n"
+# define ERR_FORK "minishell: fork failed\n"
 
 # define ERR_ENV_ARG "minishell: env: too many arguments\n"
 # define ERR_ENV_OPTIONS "minishell: env: options not supported\n"
@@ -79,7 +79,6 @@
 # define ERR_EXIT_NUM_ARG "exit: numeric argument required\n"
 
 # define ERR_EXPORT_VALID_ID "export: %s: not a valid identifier\n"
-
 
 typedef enum e_types
 {
@@ -115,99 +114,98 @@ typedef enum e_redir_type
 	REDIR_HDOC = 10,
 }						t_redir_type;
 
-
 typedef struct s_env
 {
-    char            *name;
-    char            *value;
-    struct s_env    *next;
-}               t_env;
+	char				*name;
+	char				*value;
+	struct s_env		*next;
+}						t_env;
 
 typedef struct s_token
 {
-    int             type;
-    char            *value;
-    struct s_token  *next;
-}               t_token;
+	int					type;
+	char				*value;
+	struct s_token		*next;
+}						t_token;
 
 typedef struct s_redir
 {
-    int             type;
-    char            *filename;
-	int             heredoc_fd;
-    struct s_redir  *next;
-}               t_redir;
+	int					type;
+	char				*filename;
+	int					heredoc_fd;
+	struct s_redir		*next;
+}						t_redir;
 
 typedef struct s_command
 {
-    char            **argv;
-    t_redir         *redirs;
-    int				fd[2];
-    struct s_command *next;
-}               t_command;
+	char				**argv;
+	t_redir				*redirs;
+	int					fd[2];
+	struct s_command	*next;
+}						t_command;
 
 typedef struct s_shell
 {
-    int             last_status;
-    t_env           *env;
-	char			**envp;
-    t_token         *tokens;
-    t_command       *cmds;
-}               t_shell;
+	int					last_status;
+	t_env				*env;
+	char				**envp;
+	t_token				*tokens;
+	t_command			*cmds;
+}						t_shell;
 
 typedef struct s_heredoc_utils
 {
-	char			filename[256];
-	int				fd_write;
-	int				fd_read;
-	char			*pid_str;
-	char			*cnt_str;
-	int				count;
-}				t_heredoc_utils;
+	char				filename[256];
+	int					fd_write;
+	int					fd_read;
+	char				*pid_str;
+	char				*cnt_str;
+	int					count;
+}						t_heredoc_utils;
 
 /*UTILS_STRUC*/
 
 typedef struct s_env_utils
 {
-    char    *eq;
-    char    *name;
-    char    *value;
-    t_env   *node;
-    int     i;
-}   t_env_utils;
+	char				*eq;
+	char				*name;
+	char				*value;
+	t_env				*node;
+	int					i;
+}						t_env_utils;
 
 typedef struct s_clean_line
 {
-    char				*res;
-    char				*line;
-    int					i;
-    int					j;
-    int					space;
-	int     			in_squote;
-    int     			in_dquote;
-}					t_clean_line;
+	char				*res;
+	char				*line;
+	int					i;
+	int					j;
+	int					space;
+	int					in_squote;
+	int					in_dquote;
+}						t_clean_line;
 
 typedef struct s_expand_tok
 {
 	const char			*str;
-	t_env       		*env_list;
+	t_env				*env_list;
 	int					last_status;
 	int					i;
 	int					in_sq;
 	int					in_dq;
 	char				*res;
-}					t_expand_tok;
+}						t_expand_tok;
 
 typedef struct s_sort_alpha
 {
-    t_env				*sorted;
-    t_env				*cur;
-    t_env				*next;
-    t_env 				**insert_pos;
-    size_t				len_cur;
-    size_t				len_ins;
-    size_t				max_len;
-}   				t_sort_alpha;
+	t_env				*sorted;
+	t_env				*cur;
+	t_env				*next;
+	t_env				**insert_pos;
+	size_t				len_cur;
+	size_t				len_ins;
+	size_t				max_len;
+}						t_sort_alpha;
 
 /*===== UTILS =====*/
 /*env_setup.c*/
@@ -265,16 +263,18 @@ int						error_double_semicolon(t_token *tokens);
 int						error_parenthesis(t_token *tokens);
 
 /* expand_utils.c */
-void    				init_expand_tok(t_expand_tok *v, const char *s, t_env *env_list, int last_status);
-char    				*extract_var(t_expand_tok *v);
-char    				*get_env_value(t_env *env_list, const char *key);
-char    				*build_new_res(const char *old, const char *val);
-void    				append_char(t_expand_tok *v, char c);
+void					init_expand_tok(t_expand_tok *v, const char *s,
+							t_env *env_list, int last_status);
+char					*extract_var(t_expand_tok *v);
+char					*get_env_value(t_env *env_list, const char *key);
+char					*build_new_res(const char *old, const char *val);
+void					append_char(t_expand_tok *v, char c);
 
 /* expand_tokens.c */
-char					*expand_string(const char *s, t_env *env_list, int last_status);
-void					expand_tokens(t_token *tok, t_env *env_list, int last_status);
-
+char					*expand_string(const char *s, t_env *env_list,
+							int last_status);
+void					expand_tokens(t_token *tok, t_env *env_list,
+							int last_status);
 
 /*===== BUILTINS =====*/
 
@@ -287,10 +287,11 @@ int						ft_cd(char **argv, t_env **env);
 
 /*ft_cd_env.c*/
 char					*env_get(t_env *env, const char *name);
-int   					env_set(t_env **env, const char *name, const char *value);
+int						env_set(t_env **env, const char *name,
+							const char *value);
 
 /*ft_echo.c*/
-int 					ft_echo(char **argv);
+int						ft_echo(char **argv);
 
 /*ft_exit.c*/
 int						ft_exit(char **argv);
@@ -305,19 +306,20 @@ int						ft_export(char **argv, t_env **env);
 int						ft_pwd(char **argv);
 
 /*ft_unset.c*/
-int ft_unset(char **argv, t_env **env);
+int						ft_unset(char **argv, t_env **env);
 
 /*===== EXECUTION =====*/
 /*commands_setup.c*/
 void					free_commands(t_command *cmds);
 
 /*commands_utils.c*/
-t_command               *new_command(void);
-int 					add_argv(t_command *cmd, const char *arg);
-int 					add_redir(t_command *cmd, int type, const char *filename);
+t_command				*new_command(void);
+int						add_argv(t_command *cmd, const char *arg);
+int						add_redir(t_command *cmd, int type,
+							const char *filename);
 
 /*commands.c*/
-t_command 				*build_commands_from_tokens(t_token *tokens);
+t_command				*build_commands_from_tokens(t_token *tokens);
 
 /*handle_command_error.c*/
 void					handle_command_error(t_command *cmd, int err);
@@ -342,6 +344,6 @@ void					ft_pipe(t_shell *sh, int *last_status);
 /*===== SIGNAL =====*/
 void					handle_sigint(int sig);
 void					handle_sigquit(int sig);
-void    				init_signals(void);
+void					init_signals(void);
 
 #endif

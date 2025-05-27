@@ -6,103 +6,102 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 17:15:48 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 09:49:52 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static const char *type_to_str(int type)
+static const char	*type_to_str(int type)
 {
-    if (type == T_CMD)
-        return "Commande";
-    else if (type == T_ARG)
-        return "Argument";
-    else if (type == T_PIPE)
-        return "Pipe";
-    else if (type == T_INFILE_FILE)
-        return "Infile";
-    else if (type == T_INFILE_OPERATOR)
-        return "Infile operator";
-    else if (type == T_OUTFILE_FILE)
-        return "Outfile";
-    else if (type == T_OUTFILE_OPERATOR)
-        return "Outfile operator";
-    else if (type == T_APPEND_FILE)
-        return "Append";
-    else if (type == T_APPEND_OPERATOR)
-        return "Append operator";
-    else if (type == T_HEREDOC_DELIM)
-        return "Heredoc";
-    else if (type == T_HEREDOC_OPERATOR)
-        return "Heredoc operator";
-    return "UNKNOWN";
+	if (type == T_CMD)
+		return ("Commande");
+	else if (type == T_ARG)
+		return ("Argument");
+	else if (type == T_PIPE)
+		return ("Pipe");
+	else if (type == T_INFILE_FILE)
+		return ("Infile");
+	else if (type == T_INFILE_OPERATOR)
+		return ("Infile operator");
+	else if (type == T_OUTFILE_FILE)
+		return ("Outfile");
+	else if (type == T_OUTFILE_OPERATOR)
+		return ("Outfile operator");
+	else if (type == T_APPEND_FILE)
+		return ("Append");
+	else if (type == T_APPEND_OPERATOR)
+		return ("Append operator");
+	else if (type == T_HEREDOC_DELIM)
+		return ("Heredoc");
+	else if (type == T_HEREDOC_OPERATOR)
+		return ("Heredoc operator");
+	return ("UNKNOWN");
 }
 
-void debug_print_tokens(t_token *tokens)
+void	debug_print_tokens(t_token *tokens)
 {
-    while (tokens)
-    {
-        printf("[%s:\"%s\"] ",
-               type_to_str(tokens->type),
-               tokens->value);
-        tokens = tokens->next;
-    }
-    printf("\n");
+	while (tokens)
+	{
+		printf("[%s:\"%s\"] ", type_to_str(tokens->type), tokens->value);
+		tokens = tokens->next;
+	}
+	printf("\n");
 }
 
-static void prepare_heredocs(t_command *cmds)
+static void	prepare_heredocs(t_command *cmds)
 {
-    t_command *cmd = cmds;
-    t_redir   *redir;
+	t_command	*cmd;
+	t_redir		*redir;
+	int			fd;
 
-    while (cmd)
-    {
-        redir = cmd->redirs;
-        while (redir)
-        {
-            if (redir->type == T_HEREDOC_DELIM)
-            {
-                int fd = handle_heredoc(redir->filename);
-                if (fd < 0)
-                    ft_printf_error("minishell: heredoc failed\n");
-                redir->heredoc_fd = fd;
-            }
-            redir = redir->next;
-        }
-        cmd = cmd->next;
-    }
+	cmd = cmds;
+	while (cmd)
+	{
+		redir = cmd->redirs;
+		while (redir)
+		{
+			if (redir->type == T_HEREDOC_DELIM)
+			{
+				fd = handle_heredoc(redir->filename);
+				if (fd < 0)
+					ft_printf_error("minishell: heredoc failed\n");
+				redir->heredoc_fd = fd;
+			}
+			redir = redir->next;
+		}
+		cmd = cmd->next;
+	}
 }
-
 
 int	main(int argc, char **argv, char **envp)
 {
-    t_shell *sh;
-    char *line;
+	t_shell	*sh;
+	char	*line;
 
-    (void)argc;
-    (void)argv;
-    sh = init_shell(envp);
-    if (!sh)
-        return (ft_printf_error(ERR_NO_ENV), ERROR);
-    init_signals();
-    while (1)
-    {
-        line = init_prompt();
-        if (!line)
-        {
-            printf("exit\n");
-            break;
-        }
-        if (parse_line(line, sh) == SUCCESS)
-        {
-            prepare_heredocs(sh->cmds);
-            exec_commands(sh);
-            free_commands(sh->cmds);
-            free_tokens(sh->tokens);
-        }
-        free(line);
-    }
-    free_shell(sh);
-    return (sh->last_status);
+	(void)argc;
+	(void)argv;
+	sh = init_shell(envp);
+	if (!sh)
+		return (ft_printf_error(ERR_NO_ENV), ERROR);
+	init_signals();
+	while (1)
+	{
+		line = init_prompt();
+		if (!line)
+		{
+			printf("exit\n");
+			break ;
+		}
+		if (parse_line(line, sh) == SUCCESS)
+		{
+			prepare_heredocs(sh->cmds);
+			exec_commands(sh);
+			free_commands(sh->cmds);
+			free_tokens(sh->tokens);
+		}
+		free(line);
+	}
+	free_shell(sh);
+	return (sh->last_status);
 }

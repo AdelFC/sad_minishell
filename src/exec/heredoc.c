@@ -6,16 +6,12 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:09:51 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 17:21:05 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 10:02:15 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-** Lis l'entrée utilisateur ligne à ligne jusqu'au 'limiter'.
-** Écrit chaque ligne dans fd, sauf la ligne d'arrêt.
-*/
 void	handle_heredoc_input(const char *limiter, int fd)
 {
 	char	*line;
@@ -24,11 +20,11 @@ void	handle_heredoc_input(const char *limiter, int fd)
 	{
 		line = readline("> ");
 		if (!line)
-			break;
-        if (!ft_strncmp(line, limiter, ft_strlen(limiter) + 1))
+			break ;
+		if (!ft_strncmp(line, limiter, ft_strlen(limiter) + 1))
 		{
 			free(line);
-			break;
+			break ;
 		}
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
@@ -54,7 +50,6 @@ int	handle_heredoc(const char *limiter)
 	static int		count = 0;
 
 	init_heredoc_utils(&h, &count);
-
 	h.fd_write = open(h.filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
 	if (h.fd_write < 0)
 	{

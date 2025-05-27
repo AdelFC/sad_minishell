@@ -6,13 +6,11 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 21:57:16 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/25 22:05:54 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 09:52:35 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*	- Determines the type of an operator token */
 
 static int	determine_operator_type(char *value)
 {
@@ -29,8 +27,6 @@ static int	determine_operator_type(char *value)
 	return (ERROR);
 }
 
-/*	- Determines the type of token after an operator */
-
 static int	determine_post_operator_type(t_token *last)
 {
 	if (last->type == T_INFILE_OPERATOR)
@@ -45,8 +41,6 @@ static int	determine_post_operator_type(t_token *last)
 		return (T_CMD);
 	return (T_ARG);
 }
-
-/*	- Determines the type of a token based on context */
 
 int	get_token_type(char *value, t_token **head)
 {

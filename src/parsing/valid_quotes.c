@@ -6,13 +6,11 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 15:32:23 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/25 15:34:16 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 09:51:14 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/* - Checks if single and double quotes are closed in the line */
 
 int	valid_quotes(char *line)
 {

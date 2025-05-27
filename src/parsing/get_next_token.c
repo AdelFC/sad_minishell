@@ -6,18 +6,16 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 16:33:57 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 20:09:56 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 09:55:46 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*	- Extract operators ‘>’, ‘>>’, ‘<’, ‘<<’ or ‘|’ */
-
-char *extract_operator(const char *line, int *i)
+char	*extract_operator(const char *line, int *i)
 {
-	int  start;
-	char op;
+	int		start;
+	char	op;
 
 	start = *i;
 	op = line[*i];
@@ -35,8 +33,6 @@ char *extract_operator(const char *line, int *i)
 	return (ft_substr(line, start, *i - start));
 }
 
-/*	- Extract a string between single or double inverted commas */
-
 static char	*extract_quoted(const char *line, int *i)
 {
 	int		start;
@@ -47,22 +43,21 @@ static char	*extract_quoted(const char *line, int *i)
 	(*i)++;
 	while (line[*i] && line[*i] != quote)
 		(*i)++;
-	 if (line[*i] != quote)
-        return NULL;
-    (*i)++;
-    return (ft_substr(line, start, *i - start));
+	if (line[*i] != quote)
+		return (NULL);
+	(*i)++;
+	return (ft_substr(line, start, *i - start));
 }
 
-/*	- Extract a str */
-
-static char *extract_word(const char *line, int *i)
+static char	*extract_word(const char *line, int *i)
 {
-    int start = *i;
+	int	start;
 
-    while (line[*i] && is_space(line[*i]) == ERROR
-        && is_operator(line[*i]) == ERROR)
-        (*i)++;
-    return (ft_substr(line, start, *i - start));
+	start = *i;
+	while (line[*i] && is_space(line[*i]) == ERROR
+		&& is_operator(line[*i]) == ERROR)
+		(*i)++;
+	return (ft_substr(line, start, *i - start));
 }
 
 static char	*extract_segment(const char *line, int *i)
@@ -71,9 +66,6 @@ static char	*extract_segment(const char *line, int *i)
 		return (extract_quoted(line, i));
 	return (extract_word(line, i));
 }
-
-/*	- Extracts a full token by concatenating segments until the
-next space or operator */
 
 char	*get_next_token(const char *line, int *i)
 {
@@ -92,10 +84,7 @@ char	*get_next_token(const char *line, int *i)
 	{
 		seg = extract_segment(line, i);
 		if (!seg)
-		{
-			free(token_value);
-			return (NULL);
-		}
+			return (free(token_value), NULL);
 		token_value = join_and_free(token_value, seg);
 		if (!token_value)
 		{

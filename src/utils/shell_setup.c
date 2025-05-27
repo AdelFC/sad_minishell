@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 12:36:57 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/26 12:54:08 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 09:49:40 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,22 @@
 
 t_shell	*init_shell(char **envp)
 {
-    t_shell	*sh = malloc(sizeof(t_shell));
-    if (!sh)
-        return (NULL);
-    sh->env = init_env(envp);
-    if (!sh->env)
+	t_shell	*sh;
+
+	sh = malloc(sizeof(t_shell));
+	if (!sh)
+		return (NULL);
+	sh->env = init_env(envp);
+	if (!sh->env)
 	{
 		free(sh);
 		return (NULL);
 	}
-    sh->envp = envp;
-    sh->tokens = NULL;
-    sh->cmds = NULL;
-    sh->last_status = 0;
-    return (sh);
+	sh->envp = envp;
+	sh->tokens = NULL;
+	sh->cmds = NULL;
+	sh->last_status = 0;
+	return (sh);
 }
 
 void	free_shell(t_shell *sh)
