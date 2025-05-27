@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:02:53 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:11:49 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 11:31:56 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,22 +27,22 @@ int	is_builtin(const char *cmd)
 	return (SUCCESS);
 }
 
-int	exec_builtin(char **argv, t_env **env)
+int	exec_builtin(char **argv, t_shell *sh)
 {
 	if (!argv || !argv[0])
 		return (ERROR);
 	if (!ft_strncmp(argv[0], "cd", 3) && argv[0][2] == '\0')
-		return (ft_cd(argv, env));
+		return (ft_cd(argv, &sh->env));
 	if (!ft_strncmp(argv[0], "pwd", 4) && argv[0][3] == '\0')
 		return (ft_pwd(argv));
 	if (!ft_strncmp(argv[0], "env", 4) && argv[0][3] == '\0')
-		return (ft_env(argv, env));
+		return (ft_env(argv, &sh->env));
 	if (!ft_strncmp(argv[0], "export", 7) && argv[0][6] == '\0')
-		return (ft_export(argv, env));
+		return (ft_export(argv, &sh->env));
 	if (!ft_strncmp(argv[0], "unset", 6) && argv[0][5] == '\0')
-		return (ft_unset(argv, env));
+		return (ft_unset(argv, &sh->env));
 	if (!ft_strncmp(argv[0], "exit", 5) && argv[0][4] == '\0')
-		return (ft_exit(argv));
+		return (ft_exit(argv, sh));
 	if (!ft_strncmp(argv[0], "echo", 5) && argv[0][4] == '\0')
 		return (ft_echo(argv));
 	return (ERROR);

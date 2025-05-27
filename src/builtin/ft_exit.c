@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:16 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:13:38 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 11:36:26 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	is_numeric(const char *s)
 	return (SUCCESS);
 }
 
-int	ft_exit(char **argv)
+int	ft_exit(char **argv, t_shell *sh)
 {
 	long	code;
 	int		argc;
@@ -53,10 +53,13 @@ int	ft_exit(char **argv)
 		if (is_numeric(argv[1]) == ERROR)
 		{
 			ft_printf_error(ERR_EXIT_NUM_ARG, argv[1]);
+			free_shell(sh);
+			sh = NULL;
 			exit(2);
 		}
 		code = ft_atoi(argv[1]);
 	}
 	ft_printf("exit\n");
+	free_shell(sh);
 	exit((int)code);
 }

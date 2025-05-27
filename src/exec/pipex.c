@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:10:11 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:11:10 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 11:31:56 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ static void	process_first(t_command *cmd, t_shell *sh)
 	close(cmd->fd[1]);
 	if (is_builtin(cmd->argv[0]) == ERROR)
 	{
-		status = exec_builtin(cmd->argv, &sh->env);
+		status = exec_builtin(cmd->argv, sh);
+		free_shell(sh);
 		exit(status);
 	}
 	path = find_path(cmd->argv[0], sh->envp);
@@ -57,7 +58,8 @@ static void	process_middle(int prev_fd, t_command *cmd, t_shell *sh)
 	close(prev_fd);
 	if (is_builtin(cmd->argv[0]) == ERROR)
 	{
-		status = exec_builtin(cmd->argv, &sh->env);
+		status = exec_builtin(cmd->argv, sh);
+		free_shell(sh);
 		exit(status);
 	}
 	path = find_path(cmd->argv[0], sh->envp);
@@ -83,7 +85,8 @@ static void	process_last(int prev_fd, t_command *cmd, t_shell *sh)
 	close(prev_fd);
 	if (is_builtin(cmd->argv[0]) == ERROR)
 	{
-		status = exec_builtin(cmd->argv, &sh->env);
+		status = exec_builtin(cmd->argv, sh);
+		free_shell(sh);
 		exit(status);
 	}
 	path = find_path(cmd->argv[0], sh->envp);

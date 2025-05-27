@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:02:05 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 11:31:56 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	exec_commands(t_shell *sh)
 	{
 		if (cmd->redirs && apply_redirections(cmd->redirs) == ERROR)
 			return (sh->last_status);
-		sh->last_status = exec_builtin(cmd->argv, &sh->env);
+		sh->last_status = exec_builtin(cmd->argv, sh);
 	}
 	else if (!cmd->next)
 	{

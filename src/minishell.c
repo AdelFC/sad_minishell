@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:57:46 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/05/27 11:48:18 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_shell	*sh;
 	char	*line;
+	int		last_status;
 
 	(void)argc;
 	(void)argv;
@@ -102,6 +103,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free(line);
 	}
+	last_status = sh->last_status;
 	free_shell(sh);
-	return (sh->last_status);
+	return (last_status);
 }

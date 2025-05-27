@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 09:49:27 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 11:31:56 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,7 +280,7 @@ void					expand_tokens(t_token *tok, t_env *env_list,
 
 /*exec_builtin.c*/
 int						is_builtin(const char *cmd);
-int						exec_builtin(char **argv, t_env **env);
+int						exec_builtin(char **argv, t_shell *sh);
 
 /*ft_cd.c*/
 int						ft_cd(char **argv, t_env **env);
@@ -294,7 +294,7 @@ int						env_set(t_env **env, const char *name,
 int						ft_echo(char **argv);
 
 /*ft_exit.c*/
-int						ft_exit(char **argv);
+int						ft_exit(char **argv, t_shell *sh);
 
 /*ft_env.c*/
 int						ft_env(char **argv, t_env **env);
