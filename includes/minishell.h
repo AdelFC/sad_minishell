@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 11:31:56 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 18:37:32 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,6 +232,9 @@ int						tokenize(char *line, t_token **tokens);
 /*clean_line.c*/
 char					*clean_line(char *line);
 
+/*clean_line_utils.c*/
+void					init_clean_line_vars(t_clean_line *var, char *line);
+
 /*get_next_token.c*/
 char					*get_next_token(const char *line, int *i);
 
@@ -250,17 +253,15 @@ int						valid_quotes(char *line);
 /*check_syntax.c*/
 int						check_syntax(t_token *tokens);
 
-/*error_syntax_utils.c*/
-int						is_pipe(int type);
-int						is_redir_op(int type);
-int						is_redir_file(int type);
-
 /*error_syntax.c*/
 int						error_pipe_start_end(t_token *tokens);
 int						error_double_pipe(t_token *tokens);
 int						error_redirection(t_token *tokens);
 int						error_double_semicolon(t_token *tokens);
 int						error_parenthesis(t_token *tokens);
+int						is_pipe(int type);
+int						is_redir_op(int type);
+int						is_redir_file(int type);
 
 /* expand_utils.c */
 void					init_expand_tok(t_expand_tok *v, const char *s,
@@ -322,7 +323,7 @@ int						add_redir(t_command *cmd, int type,
 t_command				*build_commands_from_tokens(t_token *tokens);
 
 /*handle_command_error.c*/
-void					handle_command_error(t_command *cmd, int err);
+void					handle_command_error(t_shell *sh, t_command *cmd, int err);
 
 /*exec.c*/
 int						exec_commands(t_shell *sh);

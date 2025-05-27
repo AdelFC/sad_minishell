@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_command_error.c                             :+:      :+:    :+:   */
+/*   clean_line_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 16:14:26 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 18:37:32 by afodil-c         ###   ########.fr       */
+/*   Created: 2025/05/27 17:59:06 by afodil-c          #+#    #+#             */
+/*   Updated: 2025/05/27 18:00:30 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_command_error(t_shell *sh, t_command *cmd, int err)
+void	init_clean_line_vars(t_clean_line *var, char *line)
 {
-	if (err == 127)
-		ft_printf_error(ERR_MINISHELL_CMD_NOT_FOUND, cmd->argv[0]);
-	else if (err == 126)
-		ft_printf_error(ERR_MINISHELL_PERMISSION, cmd->argv[0]);
-	free_shell(sh);
-	exit(err);
+	var->line = line;
+	var->i = skip_spaces(line);
+	var->j = 0;
+	var->space = 0;
+	var->in_squote = 0;
+	var->in_dquote = 0;
 }

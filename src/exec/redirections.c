@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:09:11 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:04:43 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 18:20:48 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	apply_redirections(t_redir *redir)
 			if (dup2(redir->heredoc_fd, STDIN_FILENO) < 0)
 			{
 				close(redir->heredoc_fd);
-				ft_printf_error("minishell: dup2 heredoc failed\n");
+				ft_printf_error("minishell: dup2 heredoc: %s\n", strerror(errno));
 				return (ERROR);
 			}
 			close(redir->heredoc_fd);

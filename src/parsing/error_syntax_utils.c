@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 22:46:24 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 09:54:34 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 18:02:06 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,43 @@ int	is_redir_file(int type)
 {
 	return (type == T_INFILE_FILE || type == T_OUTFILE_FILE
 		|| type == T_APPEND_FILE || type == T_HEREDOC_DELIM);
+}
+
+int	error_redirection(t_token *tokens)
+{
+	t_token	*cur;
+
+	cur = tokens;
+	while (cur && cur->next)
+	{
+		if (is_redir_op(cur->type) && !is_redir_file(cur->next->type))
+		{
+			ft_printf_error(ERR_UNEXPECTED_TOKEN, cur->next->value);
+			return (ERROR);
+		}
+		cur = cur->next;
+	}
+	if (cur && is_redir_op(cur->type))
+	{
+		ft_printf_error(ERR_TOKEN_NEWLINE);
+		return (ERROR);
+	}
+	return (SUCCESS);
+}
+
+int	error_double_semicolon(t_token *tokens)
+{
+	t_token	*cur;
+
+	cur = tokens;
+	while (cur && cur->next)
+	{
+		if (cur->value && ft_strncmp(cur->value, ";;", 3) == 0)
+		{
+			ft_printf_error(ERR_TOKEN_DOUBLE_SEMICOLON);
+			return (ERROR);
+		}
+		cur = cur->next;
+	}
+	return (SUCCESS);
 }

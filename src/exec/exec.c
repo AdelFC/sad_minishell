@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 11:31:56 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/27 18:37:31 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ static int	exec_single_external(t_command *cmd, t_shell *sh)
 			exit(EXIT_FAILURE);
 		path = find_path(cmd->argv[0], sh->envp);
 		if (!path)
-			handle_command_error(cmd, 127);
+			handle_command_error(sh, cmd, 127);
 		execve(path, cmd->argv, sh->envp);
 		free(path);
-		handle_command_error(cmd, 126);
+		handle_command_error(sh, cmd, 126);
 	}
 	if (waitpid(pid, &status, 0) > 0)
 	{
