@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 23:40:45 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 00:43:54 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,49 +64,49 @@ int	exec_single_external(t_command *cmd, t_shell *sh)
 	return (sh->last_status);
 }
 
-int	exec_commands(t_shell *sh)
+int	exec_single_builtin_cmd(t_command *cmd, t_shell *sh)
+{
+	int	in_save;
+	int	out_save;
+	int	status;
+
+	in_save = dup(STDIN_FILENO);
+	out_save = dup(STDOUT_FILENO);
+	if (cmd->redirs && apply_redirections(cmd->redirs) == ERROR)
+	{
+		dup2(in_save, STDIN_FILENO);
+		dup2(out_save, STDOUT_FILENO);
+		close(in_save);
+		close(out_save);
+		return (sh->last_status);
+	}
+	status = exec_builtin(cmd->argv, sh);
+	dup2(in_save, STDIN_FILENO);
+	dup2(out_save, STDOUT_FILENO);
+	close(in_save);
+	close(out_save);
+	return (status);
+}
+
+int	ft_exec_commands(t_shell *sh)
 {
 	t_command	*cmd;
-	int		stdin_save;
-	int		stdout_save;
 
 	cmd = sh->cmds;
 	if (!cmd || !cmd->argv || !cmd->argv[0])
 		return (sh->last_status);
-	if (!cmd->next && is_builtin(cmd->argv[0]) == ERROR)
+	if (!cmd->next)
 	{
-		stdin_save = dup(STDIN_FILENO);
-		stdout_save = dup(STDOUT_FILENO);
-		if (cmd->redirs && apply_redirections(cmd->redirs) == ERROR)
-		{
-			dup2(stdin_save, STDIN_FILENO);
-			dup2(stdout_save, STDOUT_FILENO);
-			close(stdin_save);
-			close(stdout_save);
-			close_heredoc_fds(cmd->redirs);
-			return (sh->last_status);
-		}
-		sh->last_status = exec_builtin(cmd->argv, sh);
-		dup2(stdin_save, STDIN_FILENO);
-		dup2(stdout_save, STDOUT_FILENO);
-		close(stdin_save);
-		close(stdout_save);
-		close_heredoc_fds(cmd->redirs);
-	}
-	else if (!cmd->next)
-	{
-		sh->last_status = exec_single_external(cmd, sh);
-		close_heredoc_fds(cmd->redirs);
+		if (is_builtin(cmd->argv[0]) == ERROR)
+			sh->last_status = exec_single_builtin_cmd(cmd, sh);
+		else
+			sh->last_status = exec_single_external(cmd, sh);
+		cleanup_heredocs_list(cmd);
 	}
 	else
 	{
 		ft_pipe(sh, &sh->last_status);
-		cmd = sh->cmds;
-		while (cmd)
-		{
-			close_heredoc_fds(cmd->redirs);
-			cmd = cmd->next;
-		}
+		cleanup_heredocs_list(cmd);
 	}
 	return (sh->last_status);
 }

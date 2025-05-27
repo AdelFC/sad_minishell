@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 22:53:18 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 01:00:52 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -344,6 +344,7 @@ void					handle_command_error(t_shell *sh,
 
 /*exec.c*/
 int						exec_commands(t_shell *sh);
+void					cleanup_heredocs_list(t_command *cmd);
 
 /*path.c*/
 char					*join_path(const char *dir, const char *cmd);
@@ -360,7 +361,8 @@ int						handle_heredoc(const char *limiter);
 
 void					process_first(t_command *cmd, t_shell *sh);
 void					setup_pipes(t_command *cmd, int prev_fd);
-void					process_middle(int prev_fd, t_command *cmd, t_shell *sh);
+void					process_middle(int prev_fd, t_command *cmd,
+							t_shell *sh);
 void					process_last(int prev_fd, t_command *cmd, t_shell *sh);
 void					update_prev_fd(int *prev_fd, t_command *cur);
 void					handle_pipe_iteration(t_command *cur,

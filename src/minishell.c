@@ -6,13 +6,106 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 22:08:18 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 01:00:32 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static const char	*type_to_str(int type)
+static int	prepare_heredocs(t_command *cmds)
+{
+	t_command	*cmd;
+	t_redir		*redir;
+	int			fd;
+
+	cmd = cmds;
+	while (cmd)
+	{
+		redir = cmd->redirs;
+		while (redir)
+		{
+			if (redir->type == T_HEREDOC_DELIM)
+			{
+				fd = handle_heredoc(redir->filename);
+				if (fd < 0)
+					return (ft_printf_error("minishell: heredoc failed\n"),
+						ERROR);
+				free(redir->filename);
+				redir->filename = NULL;
+				redir->heredoc_fd = fd;
+			}
+			redir = redir->next;
+		}
+		cmd = cmd->next;
+	}
+	return (SUCCESS);
+}
+
+static t_shell	*init_shell_and_signals(char **envp)
+{
+	t_shell	*sh;
+
+	sh = init_shell(envp);
+	if (!sh)
+	{
+		ft_printf_error(ERR_NO_ENV);
+		return (NULL);
+	}
+	init_signals();
+	return (sh);
+}
+
+static int	process_line(char *line, t_shell *sh)
+{
+	int	ret;
+
+	if (!line)
+	{
+		printf("exit\n");
+		return (ERROR);
+	}
+	ret = parse_line(line, sh);
+	if (ret == SUCCESS)
+	{
+		if (prepare_heredocs(sh->cmds) == ERROR)
+		{
+			sh->last_status = 1;
+			free(line);
+			return (ERROR);
+		}
+		exec_commands(sh);
+		free_commands(sh->cmds);
+		free_tokens(sh->tokens);
+		sh->cmds = NULL;
+		sh->tokens = NULL;
+	}
+	free(line);
+	return (SUCCESS);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_shell	*sh;
+	char	*line;
+	int		last_status;
+
+	(void)argc;
+	(void)argv;
+	sh = init_shell_and_signals(envp);
+	if (!sh)
+		return (ERROR);
+	while (1)
+	{
+		line = init_prompt();
+		if (process_line(line, sh) == ERROR)
+			break ;
+	}
+	last_status = sh->last_status;
+	free_shell(sh);
+	return (last_status);
+}
+
+/*static const char	*type_to_str(int type)
 {
 	if (type == T_CMD)
 		return ("Commande");
@@ -47,74 +140,4 @@ void	debug_print_tokens(t_token *tokens)
 		tokens = tokens->next;
 	}
 	printf("\n");
-}
-
-static int	prepare_heredocs(t_command *cmds)
-{
-	t_command	*cmd;
-	t_redir		*redir;
-	int			fd;
-
-	cmd = cmds;
-	while (cmd)
-	{
-		redir = cmd->redirs;
-		while (redir)
-		{
-			if (redir->type == T_HEREDOC_DELIM)
-			{
-				fd = handle_heredoc(redir->filename);
-				if (fd < 0)
-					return (ft_printf_error("minishell: heredoc failed\n"),
-						ERROR);
-				free(redir->filename);
-				redir->filename = NULL;
-				redir->heredoc_fd = fd;
-			}
-			redir = redir->next;
-		}
-		cmd = cmd->next;
-	}
-	return (SUCCESS);
-}
-
-int	main(int argc, char **argv, char **envp)
-{
-	t_shell	*sh;
-	char	*line;
-	int		last_status;
-
-	(void)argc;
-	(void)argv;
-	sh = init_shell(envp);
-	if (!sh)
-		return (ft_printf_error(ERR_NO_ENV), ERROR);
-	init_signals();
-	while (1)
-	{
-		line = init_prompt();
-		if (!line)
-		{
-			printf("exit\n");
-			break ;
-		}
-		if (parse_line(line, sh) == SUCCESS)
-		{
-			if (prepare_heredocs(sh->cmds) == ERROR)
-			{
-				sh->last_status = 1;
-				free(line);
-				break ;
-			}
-			exec_commands(sh);
-			free_commands(sh->cmds);
-			free_tokens(sh->tokens);
-			sh->cmds = NULL;
-			sh->tokens = NULL;
-		}
-		free(line);
-	}
-	last_status = sh->last_status;
-	free_shell(sh);
-	return (last_status);
-}
+}*/

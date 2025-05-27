@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:05:21 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:03:04 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 00:44:40 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,7 @@ char	*find_path(const char *cmd, char **envp)
 	{
 		candidate = join_path(dirs[j], cmd);
 		if (candidate && access(candidate, X_OK) == 0)
-		{
-			ft_free_array(dirs);
-			return (candidate);
-		}
+			return (ft_free_array(dirs), candidate);
 		free(candidate);
 		j++;
 	}
