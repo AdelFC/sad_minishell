@@ -6,103 +6,70 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:09:51 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 22:15:09 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 23:22:07 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void heredoc_sigint_handler(int sig)
+void	ctrl_c_heredoc(int sig)
 {
 	(void)sig;
-	exit(130);
+	close(STDIN_FILENO);
+	g_sig = 130;
 }
 
-void	handle_heredoc_input(const char *limiter, int fd)
+void	handle_heredoc_input(t_shell *sh, const char *limiter, int fd)
 {
-	char	*line;
+	char *prompt;
 
-	while (1)
+	signal(SIGINT, ctrl_c_heredoc);
+	rl_clear_history();
+	prompt = readline("> ");
+	if (g_sig == 130)
+		return (sh->last_status = 130, free(prompt));
+	while (prompt != NULL)
 	{
-		line = readline("> ");
-		if (!line)
-			break ;
-		if (!ft_strncmp(line, limiter, ft_strlen(limiter) + 1))
-		{
-			free(line);
-			break ;
-		}
-		write(fd, line, ft_strlen(line));
+        if (ft_strncmp(prompt, limiter, ft_strlen(limiter) + 1) == 0)
+            break ;
+		write(fd, prompt, ft_strlen(prompt));
 		write(fd, "\n", 1);
-		free(line);
+		free(prompt);
+		prompt = readline("> ");
+		if (g_sig == 130)
+			return (sh->last_status = 130, free(prompt));
 	}
+	free(prompt);
 }
 
 int	handle_heredoc(const char *limiter, t_shell *sh)
 {
-	t_heredoc_utils	h;
-	static int		count = 0;
-	pid_t			pid;
-	int				status = 0;
+	int fd;
+	pid_t pid;
+	int status;
 
-	h.pid_str = ft_itoa(getpid());
-	h.cnt_str = ft_itoa(count++);
-	ft_strlcpy(h.filename, "/tmp/minishell_heredoc_", sizeof(h.filename));
-	ft_strlcat(h.filename, h.pid_str, sizeof(h.filename));
-	ft_strlcat(h.filename, "_", sizeof(h.filename));
-	ft_strlcat(h.filename, h.cnt_str, sizeof(h.filename));
-	h.fd_write = -1;
-	h.fd_read = -1;
-
+	g_sig = 0;
 	pid = fork();
 	if (pid < 0)
-	{
-		ft_printf_error(ERR_FORK);
-		free(h.pid_str);
-		free(h.cnt_str);
 		return (-1);
-	}
 	if (pid == 0)
 	{
-		signal(SIGINT, heredoc_sigint_handler);
-		signal(SIGQUIT, SIG_IGN);
-		h.fd_write = open(h.filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-		if (h.fd_write < 0)
-		{
-			free(h.pid_str);
-			free(h.cnt_str);
-			free_shell(sh);
+		fd = open(".heredoc.tmp", O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		if (fd < 0)
 			exit(1);
-		}
-		handle_heredoc_input(limiter, h.fd_write);
-		close(h.fd_write);
-		free(h.pid_str);
-		free(h.cnt_str);
-		free_shell(sh);
-		exit(0);
+		handle_heredoc_input(sh, limiter, fd);
+		close(fd);
+        free_shell(sh);
+		exit(g_sig == 130 ? 130 : 0);
 	}
 	waitpid(pid, &status, 0);
-	// Toujours tenter d'ouvrir le fichier pour pouvoir le fermer si besoin
-	h.fd_read = open(h.filename, O_RDONLY);
-	if ((WIFSIGNALED(status) && WTERMSIG(status) == SIGINT) ||
-		(WIFEXITED(status) && WEXITSTATUS(status) == 130))
+	if (WIFSIGNALED(status) || WEXITSTATUS(status) == 130)
 	{
 		g_sig = 130;
-		if (h.fd_read >= 0)
-		{
-			close(h.fd_read);
-			unlink(h.filename);
-		}
-		else
-			unlink(h.filename);
-		free(h.pid_str);
-		free(h.cnt_str);
-		// free_shell(sh); // NE PAS free ici, le shell est libéré dans le main
-		return (-1);
+        return (-1);
 	}
-	if (h.fd_read >= 0)
-		unlink(h.filename);
-	free(h.pid_str);
-	free(h.cnt_str);
-	return (h.fd_read);
+	fd = open(".heredoc.tmp", O_RDONLY, 0644);
+	if (fd < 0)
+		return (-1);
+	return (fd);
 }

@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 21:59:18 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 23:05:05 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,7 +349,8 @@ char					*find_path(const char *cmd, char **envp);
 int						apply_redirections(t_redir *redir);
 
 /*heredoc.c*/
-void					handle_heredoc_input(const char *limiter, int fd);
+void					ctrl_c_heredoc(int sig);
+void					handle_heredoc_input(t_shell *sh, const char *limiter, int fd);
 int						handle_heredoc(const char *limiter, t_shell *sh);
 
 /*pipex.c*/

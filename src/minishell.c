@@ -6,13 +6,50 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 22:12:39 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 23:38:00 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int g_sig = 0;
+
+static const char	*type_to_str(int type)
+{
+	if (type == T_CMD)
+		return ("Commande");
+	else if (type == T_ARG)
+		return ("Argument");
+	else if (type == T_PIPE)
+		return ("Pipe");
+	else if (type == T_INFILE_FILE)
+		return ("Infile");
+	else if (type == T_INFILE_OPERATOR)
+		return ("Infile operator");
+	else if (type == T_OUTFILE_FILE)
+		return ("Outfile");
+	else if (type == T_OUTFILE_OPERATOR)
+		return ("Outfile operator");
+	else if (type == T_APPEND_FILE)
+		return ("Append");
+	else if (type == T_APPEND_OPERATOR)
+		return ("Append operator");
+	else if (type == T_HEREDOC_DELIM)
+		return ("Heredoc");
+	else if (type == T_HEREDOC_OPERATOR)
+		return ("Heredoc operator");
+	return ("UNKNOWN");
+}
+
+void	debug_print_tokens(t_token *tokens)
+{
+	while (tokens)
+	{
+		printf("[%s:\"%s\"] ", type_to_str(tokens->type), tokens->value);
+		tokens = tokens->next;
+	}
+	printf("\n");
+}
 
 static int	prepare_heredocs(t_command *cmds, t_shell *sh)
 {
@@ -73,6 +110,10 @@ static int	process_line(char *line, t_shell *sh)
 			if (g_sig == 130)
 			{
 				sh->last_status = 130;
+				free_commands(sh->cmds);
+				free_tokens(sh->tokens);
+				sh->cmds = NULL;
+				sh->tokens = NULL;
 				free(line);
 				return (SUCCESS);
 			}
@@ -80,6 +121,7 @@ static int	process_line(char *line, t_shell *sh)
 			free(line);
 			return (ERROR);
 		}
+		debug_print_tokens(sh->tokens);
 		exec_commands(sh);
 		free_commands(sh->cmds);
 		free_tokens(sh->tokens);
@@ -117,39 +159,4 @@ int	main(int argc, char **argv, char **envp)
 	return (last_status);
 }
 
-/*static const char	*type_to_str(int type)
-{
-	if (type == T_CMD)
-		return ("Commande");
-	else if (type == T_ARG)
-		return ("Argument");
-	else if (type == T_PIPE)
-		return ("Pipe");
-	else if (type == T_INFILE_FILE)
-		return ("Infile");
-	else if (type == T_INFILE_OPERATOR)
-		return ("Infile operator");
-	else if (type == T_OUTFILE_FILE)
-		return ("Outfile");
-	else if (type == T_OUTFILE_OPERATOR)
-		return ("Outfile operator");
-	else if (type == T_APPEND_FILE)
-		return ("Append");
-	else if (type == T_APPEND_OPERATOR)
-		return ("Append operator");
-	else if (type == T_HEREDOC_DELIM)
-		return ("Heredoc");
-	else if (type == T_HEREDOC_OPERATOR)
-		return ("Heredoc operator");
-	return ("UNKNOWN");
-}
-
-void	debug_print_tokens(t_token *tokens)
-{
-	while (tokens)
-	{
-		printf("[%s:\"%s\"] ", type_to_str(tokens->type), tokens->value);
-		tokens = tokens->next;
-	}
-	printf("\n");
-}*/
+/**/
