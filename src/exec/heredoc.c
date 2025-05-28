@@ -12,43 +12,63 @@
 
 #include "minishell.h"
 
-static int	process_heredoc_line(const char *limiter, int fd, char *line)
-{
-	if (!line)
-		return (0);
-	if (!ft_strncmp(line, limiter, ft_strlen(limiter) + 1))
-	{
-		free(line);
-		return (0);
-	}
-	write(fd, line, ft_strlen(line));
-	write(fd, "\n", 1);
-	free(line);
-	return (ERROR);
-}
-
 void	handle_heredoc_input(const char *limiter, int fd)
 {
 	char	*line;
 
 	while (1)
 	{
-		while (g_wait != 3)
+		line = readline("> ");
+		if (!line)
+			break ;
+		if (!ft_strncmp(line, limiter, ft_strlen(limiter) + 1))
 		{
-			if (g_wait == 3)
-				return ;
-			line = readline("> ");
-			if (g_wait == 3)
-			{
-				if (line)
-					free(line);
-				return ;
-			}
-			if (process_heredoc_line(limiter, fd, line) == ERROR)
-				break ;
+			free(line);
+			break ;
 		}
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		free(line);
 	}
 }
+
+// static int	process_heredoc_line(const char *limiter, int fd, char *line)
+// {
+// 	if (!line)
+// 		return (0);
+// 	if (!ft_strncmp(line, limiter, ft_strlen(limiter) + 1))
+// 	{
+// 		free(line);
+// 		return (0);
+// 	}
+// 	write(fd, line, ft_strlen(line));
+// 	write(fd, "\n", 1);
+// 	free(line);
+// 	return (ERROR);
+// }
+
+// void	handle_heredoc_input(const char *limiter, int fd)
+// {
+// 	char	*line;
+
+// 	while (1)
+// 	{
+// 		while (g_wait != 3)
+// 		{
+// 			if (g_wait == 3)
+// 				return ;
+// 			line = readline("> ");
+// 			if (process_heredoc_line(limiter, fd, line) == ERROR)
+// 				break ;
+// 			if (g_wait == 3)
+// 			{
+// 				if (line)
+// 					free(line);
+// 				return ;
+// 			}
+// 		}
+// 	}
+// }
 
 static void	init_heredoc_utils(t_heredoc_utils *h, int *static_count)
 {
