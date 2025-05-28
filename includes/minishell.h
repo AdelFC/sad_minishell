@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 12:04:35 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/05/28 21:59:18 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -350,7 +350,7 @@ int						apply_redirections(t_redir *redir);
 
 /*heredoc.c*/
 void					handle_heredoc_input(const char *limiter, int fd);
-int						handle_heredoc(const char *limiter);
+int						handle_heredoc(const char *limiter, t_shell *sh);
 
 /*pipex.c*/
 
@@ -366,12 +366,10 @@ void					ft_pipe(t_shell *sh, int *last_status);
 
 /*===== SIGNAL =====*/
 
-extern int				g_wait;
+extern int				g_sig;
 
 void					handle_sigint(int sig);
 void					handle_sigquit(int sig);
 void					init_signals(void);
-
-void					heredoc_signal_handler(void);
 
 #endif

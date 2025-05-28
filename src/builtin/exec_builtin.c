@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:02:53 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 11:31:56 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 21:48:53 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ int	exec_builtin(char **argv, t_shell *sh)
 		return (ft_export(argv, &sh->env));
 	if (!ft_strncmp(argv[0], "unset", 6) && argv[0][5] == '\0')
 		return (ft_unset(argv, &sh->env));
-	if (!ft_strncmp(argv[0], "exit", 5) && argv[0][4] == '\0')
-		return (ft_exit(argv, sh));
 	if (!ft_strncmp(argv[0], "echo", 5) && argv[0][4] == '\0')
 		return (ft_echo(argv));
 	return (ERROR);

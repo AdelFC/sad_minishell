@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 11:58:01 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/05/28 22:12:39 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	g_wait = 0;
+int g_sig = 0;
 
-static int	prepare_heredocs(t_command *cmds)
+static int	prepare_heredocs(t_command *cmds, t_shell *sh)
 {
 	t_command	*cmd;
 	t_redir		*redir;
@@ -28,10 +28,9 @@ static int	prepare_heredocs(t_command *cmds)
 		{
 			if (redir->type == T_HEREDOC_DELIM)
 			{
-				fd = handle_heredoc(redir->filename);
+				fd = handle_heredoc(redir->filename, sh);
 				if (fd < 0)
-					return (ft_printf_error("minishell: heredoc failed\n"),
-						ERROR);
+					return (ERROR);
 				free(redir->filename);
 				redir->filename = NULL;
 				redir->heredoc_fd = fd;
@@ -69,8 +68,14 @@ static int	process_line(char *line, t_shell *sh)
 	ret = parse_line(line, sh);
 	if (ret == SUCCESS)
 	{
-		if (prepare_heredocs(sh->cmds) == ERROR)
+		if (prepare_heredocs(sh->cmds, sh) == ERROR)
 		{
+			if (g_sig == 130)
+			{
+				sh->last_status = 130;
+				free(line);
+				return (SUCCESS);
+			}
 			sh->last_status = 1;
 			free(line);
 			return (ERROR);
@@ -99,9 +104,13 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		line = init_prompt();
-		if (process_line(line, sh) == ERROR)
+		if (g_sig)
+		{
+			sh->last_status = g_sig;
+			g_sig = 0;
+		}
+		if (!line || process_line(line, sh) == ERROR)
 			break ;
-		g_wait = 0;
 	}
 	last_status = sh->last_status;
 	free_shell(sh);

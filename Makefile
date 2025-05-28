@@ -26,7 +26,7 @@ PARSER_FILES = parser.c prompter.c tokens.c valid_quotes.c \
 EXEC_FILES = commands_setup.c commands_utils.c commands.c \
 		redirections.c heredoc.c pipex.c exec.c path.c \
 		handle_command_error.c pipex_utils.c exec_utils.c
-SIGNAL_FILES = signal.c heredoc_sig.c
+SIGNAL_FILES = signal.c
 BUILTIN_FILES = exec_builtin.c ft_cd.c ft_echo.c ft_env.c \
 		ft_exit.c ft_export.c ft_pwd.c ft_unset.c ft_cd_env.c \
 		ft_export_utils.c

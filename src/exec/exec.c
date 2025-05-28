@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 12:20:42 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 22:36:03 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,14 @@ int	exec_single_builtin_cmd(t_command *cmd, t_shell *sh)
 		close(in_save);
 		close(out_save);
 		return (sh->last_status);
+	}
+	if (!ft_strncmp(cmd->argv[0], "exit", 5) && cmd->argv[0][4] == '\0')
+	{
+		dup2(in_save, STDIN_FILENO);
+		dup2(out_save, STDOUT_FILENO);
+		close(in_save);
+		close(out_save);
+		ft_exit(cmd->argv, sh);
 	}
 	status = exec_builtin(cmd->argv, sh);
 	dup2(in_save, STDIN_FILENO);
