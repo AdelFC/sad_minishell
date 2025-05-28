@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 01:00:52 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 11:46:14 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,16 +61,11 @@
 # define ERR_UNCLOSED_QUOTE "error: unclosed quote\n"
 
 # define ERR_TOKEN_PIPE "minishell: syntax error near unexpected token `|`\n"
-# define ERR_TOKEN_DOUBLE_SEMICOLON \
-	"minishell: syntax error near unexpected token `;;`\n"
-# define ERR_TOKEN_PAREN_CLOSE \
-	"minishell: syntax error near unexpected token `)`\n"
-# define ERR_TOKEN_PAREN_OPEN \
-	"minishell: syntax error near unexpected token `(`\n"
-# define ERR_TOKEN_NEWLINE \
-	"minishell: syntax error near unexpected token `newline`\n"
-# define ERR_UNEXPECTED_TOKEN \
-	"minishell: syntax error near unexpected token `%s`\n"
+# define ERR_DS "minishell: syntax error near unexpected token `;;`\n"
+# define ERR_TPC "minishell: syntax error near unexpected token `)`\n"
+# define ERR_TPO "minishell: syntax error near unexpected token `(`\n"
+# define ERR_TN "minishell: syntax error near unexpected token `newline`\n"
+# define ERR_UT "minishell: syntax error near unexpected token `%s`\n"
 
 # define ERR_DUP2 "minishell: dup2: %s\n"
 # define ERR_PIPE "minishell: pipe failed\n"

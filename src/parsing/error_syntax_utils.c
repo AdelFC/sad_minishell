@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_syntax_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 22:46:24 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 18:02:06 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 11:45:56 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,14 @@ int	error_redirection(t_token *tokens)
 	{
 		if (is_redir_op(cur->type) && !is_redir_file(cur->next->type))
 		{
-			ft_printf_error(ERR_UNEXPECTED_TOKEN, cur->next->value);
+			ft_printf_error(ERR_UT, cur->next->value);
 			return (ERROR);
 		}
 		cur = cur->next;
 	}
 	if (cur && is_redir_op(cur->type))
 	{
-		ft_printf_error(ERR_TOKEN_NEWLINE);
+		ft_printf_error(ERR_TN);
 		return (ERROR);
 	}
 	return (SUCCESS);
@@ -60,7 +60,7 @@ int	error_double_semicolon(t_token *tokens)
 	{
 		if (cur->value && ft_strncmp(cur->value, ";;", 3) == 0)
 		{
-			ft_printf_error(ERR_TOKEN_DOUBLE_SEMICOLON);
+			ft_printf_error(ERR_DS);
 			return (ERROR);
 		}
 		cur = cur->next;

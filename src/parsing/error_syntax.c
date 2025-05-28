@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error_syntax.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 22:41:06 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 18:02:20 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 11:45:31 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,12 @@ int	error_parenthesis(t_token *tokens)
 	open = 0;
 	if (check_parenthesis_balance(tokens, &open) == ERROR)
 	{
-		ft_printf_error(ERR_TOKEN_PAREN_CLOSE);
+		ft_printf_error(ERR_TPC);
 		return (ERROR);
 	}
 	if (open > 0)
 	{
-		ft_printf_error(ERR_TOKEN_PAREN_OPEN);
+		ft_printf_error(ERR_TPO);
 		return (ERROR);
 	}
 	return (SUCCESS);
