@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:16 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 22:16:27 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 12:25:32 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ int	ft_exit(char **argv, t_shell *sh)
 		}
 		code = ft_atoi(argv[1]);
 	}
-	ft_printf("exit\n");
+	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO) && getppid() != 1)
+		printf("exit\n");
 	free_shell(sh);
 	exit((int)code);
 }
