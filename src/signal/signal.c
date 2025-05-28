@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 10:57:59 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 11:58:17 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/05/28 21:59:17 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,12 @@
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	g_wait = 1;
 	write(1, "\n", 1);
-	rl_replace_line("", 0);
+	if (rl_line_buffer)
+		rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
+	g_sig = 130;
 }
 
 void	handle_sigquit(int sig)
@@ -41,5 +42,4 @@ void	init_signals(void)
 	saa.sa_flags = SA_RESTART;
 	if (sigaction(SIGQUIT, &saa, NULL) == -1)
 		ft_printf_error("minishell: sigaction(SIGQUIT) failed\n");
-	signal(SIGTSTP, SIG_IGN);
 }
