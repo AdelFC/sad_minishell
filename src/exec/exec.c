@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 01:07:26 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 12:20:42 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,33 @@ int	exec_single_builtin_cmd(t_command *cmd, t_shell *sh)
 	return (status);
 }
 
+static void	handle_redir_without_cmd(t_command *cmd)
+{
+	int	in_save;
+	int	out_save;
+
+	in_save = dup(STDIN_FILENO);
+	out_save = dup(STDOUT_FILENO);
+	if (cmd->redirs)
+		apply_redirections(cmd->redirs);
+	dup2(in_save, STDIN_FILENO);
+	dup2(out_save, STDOUT_FILENO);
+	close(in_save);
+	close(out_save);
+	cleanup_heredocs_list(cmd);
+}
+
 int	exec_commands(t_shell *sh)
 {
 	t_command	*cmd;
 
 	cmd = sh->cmds;
 	if (!cmd || !cmd->argv || !cmd->argv[0])
+	{
+		if (cmd && cmd->redirs)
+			handle_redir_without_cmd(cmd);
 		return (sh->last_status);
+	}
 	if (!cmd->next)
 	{
 		if (is_builtin(cmd->argv[0]) == ERROR)
