@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 01:00:32 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 11:58:01 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	g_wait = 0;
 
 static int	prepare_heredocs(t_command *cmds)
 {
@@ -99,6 +101,7 @@ int	main(int argc, char **argv, char **envp)
 		line = init_prompt();
 		if (process_line(line, sh) == ERROR)
 			break ;
+		g_wait = 0;
 	}
 	last_status = sh->last_status;
 	free_shell(sh);

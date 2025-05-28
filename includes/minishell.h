@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 11:46:14 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/05/28 12:04:35 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ typedef struct s_sort_utils
 	int					swapped;
 	size_t				len;
 	t_env				*curr;
-}					t_sort_utils;
+}						t_sort_utils;
 
 /*===== UTILS =====*/
 /*env_setup.c*/
@@ -334,8 +334,8 @@ int						add_redir(t_command *cmd, int type,
 t_command				*build_commands_from_tokens(t_token *tokens);
 
 /*handle_command_error.c*/
-void					handle_command_error(t_shell *sh,
-							t_command *cmd, int err);
+void					handle_command_error(t_shell *sh, t_command *cmd,
+							int err);
 
 /*exec.c*/
 int						exec_commands(t_shell *sh);
@@ -360,13 +360,18 @@ void					process_middle(int prev_fd, t_command *cmd,
 							t_shell *sh);
 void					process_last(int prev_fd, t_command *cmd, t_shell *sh);
 void					update_prev_fd(int *prev_fd, t_command *cur);
-void					handle_pipe_iteration(t_command *cur,
-							t_shell *sh, int prev_fd);
+void					handle_pipe_iteration(t_command *cur, t_shell *sh,
+							int prev_fd);
 void					ft_pipe(t_shell *sh, int *last_status);
 
 /*===== SIGNAL =====*/
+
+extern int				g_wait;
+
 void					handle_sigint(int sig);
 void					handle_sigquit(int sig);
 void					init_signals(void);
+
+void					heredoc_signal_handler(void);
 
 #endif

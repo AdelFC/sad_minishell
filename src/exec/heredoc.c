@@ -3,14 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:09:51 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:02:15 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/28 12:07:30 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	process_heredoc_line(const char *limiter, int fd, char *line)
+{
+	if (!line)
+		return (0);
+	if (!ft_strncmp(line, limiter, ft_strlen(limiter) + 1))
+	{
+		free(line);
+		return (0);
+	}
+	write(fd, line, ft_strlen(line));
+	write(fd, "\n", 1);
+	free(line);
+	return (ERROR);
+}
 
 void	handle_heredoc_input(const char *limiter, int fd)
 {
@@ -18,17 +33,20 @@ void	handle_heredoc_input(const char *limiter, int fd)
 
 	while (1)
 	{
-		line = readline("> ");
-		if (!line)
-			break ;
-		if (!ft_strncmp(line, limiter, ft_strlen(limiter) + 1))
+		while (g_wait != 3)
 		{
-			free(line);
-			break ;
+			if (g_wait == 3)
+				return ;
+			line = readline("> ");
+			if (g_wait == 3)
+			{
+				if (line)
+					free(line);
+				return ;
+			}
+			if (process_heredoc_line(limiter, fd, line) == ERROR)
+				break ;
 		}
-		write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
-		free(line);
 	}
 }
 
@@ -57,6 +75,7 @@ int	handle_heredoc(const char *limiter)
 		free(h.cnt_str);
 		return (-1);
 	}
+	heredoc_signal_handler();
 	handle_heredoc_input(limiter, h.fd_write);
 	close(h.fd_write);
 	h.fd_read = open(h.filename, O_RDONLY);
