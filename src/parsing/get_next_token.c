@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_token.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 16:33:57 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 11:10:47 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 12:35:29 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*extract_operator(const char *line, int *i)
 	return (ft_substr(line, start, *i - start));
 }
 
-static char	*extract_quoted(const char *line, int *i)
+char	*extract_quoted(const char *line, int *i)
 {
 	int		start;
 	char	quote;
@@ -49,7 +49,7 @@ static char	*extract_quoted(const char *line, int *i)
 	return (ft_substr(line, start, *i - start));
 }
 
-static char	*extract_word(const char *line, int *i)
+char	*extract_word(const char *line, int *i)
 {
 	int	start;
 
@@ -60,7 +60,7 @@ static char	*extract_word(const char *line, int *i)
 	return (ft_substr(line, start, *i - start));
 }
 
-static char	*extract_segment(const char *line, int *i)
+char	*extract_segment(const char *line, int *i)
 {
 	if (line[*i] == '\'' || line[*i] == '"')
 		return (extract_quoted(line, i));
@@ -69,50 +69,21 @@ static char	*extract_segment(const char *line, int *i)
 
 char	*get_next_token(const char *line, int *i)
 {
-	char	*token_value;
-	char	*seg;
 	int		start;
-	int		j;
 	int		k;
+	int		j;
 	char	quote;
 
 	start = *i;
-	while (line[*i] && is_space(line[*i]) == SUCCESS)
-		(*i)++;
+	skip_spaces2(line, i);
 	if (line[*i] && is_operator(line[*i]) == SUCCESS)
 		return (extract_operator(line, i));
-	j = *i;
-	while (line[j] && line[j] != '=' && is_space(line[j]) == ERROR
-		&& is_operator(line[j]) == ERROR)
-		j++;
-	if (line[j] == '=' && (line[j + 1] == '"' || line[j + 1] == '\''))
+	j = find_assignment_with_quote(line, *i, &k, &quote);
+	if (j != -1)
 	{
-		quote = line[j + 1];
-		k = j + 2;
-		while (line[k] && line[k] != quote)
-			k++;
-		if (line[k] == quote)
-		{
-			k++;
-			*i = k;
-			return (ft_substr(line, start, k - start));
-		}
+		k++;
+		*i = k;
+		return (ft_substr(line, start, k - start));
 	}
-	token_value = NULL;
-	while (line[*i] && is_space(line[*i]) == ERROR
-		&& is_operator(line[*i]) == ERROR)
-	{
-		seg = extract_segment(line, i);
-		if (!seg)
-			return (free(token_value), NULL);
-		if (!token_value)
-			token_value = seg;
-		else
-			token_value = join_and_free(token_value, seg);
-		if (!token_value)
-			return (NULL);
-	}
-	if (!token_value)
-		token_value = ft_strdup("");
-	return (token_value);
+	return (extract_token_value(line, i));
 }

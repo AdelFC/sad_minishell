@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 16:34:24 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 11:18:51 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 11:57:45 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,52 +25,6 @@ void	free_tokens(t_token *tokens)
 		free(cur);
 		cur = next;
 	}
-}
-
-static t_token	*create_token(int type, char *value, int was_quoted)
-{
-	t_token	*token;
-
-	token = malloc(sizeof(t_token));
-	if (!token)
-	{
-		ft_printf_error("token error\n");
-		exit(EXIT_FAILURE);
-	}
-	ft_memset(token, 0, sizeof(t_token));
-	token->type = type;
-	token->value = value;
-	token->was_quoted = was_quoted;
-	token->next = NULL;
-	return (token);
-}
-
-static void	add_token(t_token **head, t_token *new)
-{
-	t_token	*tmp;
-
-	if (!*head)
-		*head = new;
-	else
-	{
-		tmp = *head;
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = new;
-	}
-}
-
-static int	new_token(char *value, int was_quoted, t_token **tokens)
-{
-	t_token	*token;
-	int		type;
-
-	type = get_token_type(value, tokens);
-	token = create_token(type, value, was_quoted);
-	if (!token)
-		return (ERROR);
-	add_token(tokens, token);
-	return (SUCCESS);
 }
 
 static char	*handle_eq_quote_case(char *value, int *was_quoted)
@@ -99,8 +53,8 @@ static char	*handle_eq_quote_case(char *value, int *was_quoted)
 
 static char	*get_clean_token(char *line, int *i, int *was_quoted)
 {
-	char				*value;
-	char				*result;
+	char	*value;
+	char	*result;
 
 	*was_quoted = 0;
 	value = get_next_token(line, i);
@@ -109,8 +63,9 @@ static char	*get_clean_token(char *line, int *i, int *was_quoted)
 	result = handle_eq_quote_case(value, was_quoted);
 	if (result)
 		return (result);
-	if ((value[0] == '\'' && value[ft_strlen(value) - 1] == '\'' && ft_strlen(value) > 1)
-		|| (value[0] == '"' && value[ft_strlen(value) - 1] == '"' && ft_strlen(value) > 1))
+	if ((value[0] == '\'' && value[ft_strlen(value) - 1] == '\''
+			&& ft_strlen(value) > 1) || (value[0] == '"'
+			&& value[ft_strlen(value) - 1] == '"' && ft_strlen(value) > 1))
 	{
 		*was_quoted = 1;
 		result = ft_substr(value, 1, ft_strlen(value) - 2);
@@ -125,9 +80,9 @@ static char	*get_clean_token(char *line, int *i, int *was_quoted)
 
 int	tokenize(char *line, t_token **tokens)
 {
-	int		  i;
-	int		  was_quoted;
-	char	 *value;
+	int		i;
+	int		was_quoted;
+	char	*value;
 
 	*tokens = NULL;
 	i = 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 00:43:09 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 01:10:41 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 12:12:20 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,25 @@ void	cleanup_heredocs_list(t_command *cmd)
 		close_heredoc_fds(cmd->redirs);
 		cmd = cmd->next;
 	}
+}
+
+void	wait_for_single(pid_t pid, t_shell *sh)
+{
+	int	status;
+
+	if (waitpid(pid, &status, 0) > 0)
+	{
+		if (WIFEXITED(status))
+			sh->last_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			sh->last_status = 128 + WTERMSIG(status);
+	}
+}
+
+void	restore_std_fds(int in_save, int out_save)
+{
+	dup2(in_save, STDIN_FILENO);
+	dup2(out_save, STDOUT_FILENO);
+	close(in_save);
+	close(out_save);
 }

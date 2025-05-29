@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 11:29:36 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 12:40:45 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,22 +215,22 @@ typedef struct s_sort_utils
 
 typedef struct s_get_token_utils
 {
-	char    *eq;
-	char     quote;
-	int      len;
-	char    *before;
-	char    *stripped;
-	char    *joined;
-}   t_get_token_utils;
+	char				*eq;
+	char				quote;
+	int					len;
+	char				*before;
+	char				*stripped;
+	char				*joined;
+}						t_get_token_utils;
 
 typedef struct s_split_utils
 {
-    char    **words;
-    t_token **pp;
-    t_token  *first;
-    t_token  *last;
-    int       i;
-}   t_split_utils;
+	char				**words;
+	t_token				**pp;
+	t_token				*first;
+	t_token				*last;
+	int					i;
+}						t_split_utils;
 
 /*===== UTILS =====*/
 /*env_setup.c*/
@@ -254,6 +254,11 @@ char					*join_and_free(char *res, char *seg);
 void					free_tokens(t_token *head);
 int						tokenize(char *line, t_token **tokens);
 
+/*build_tokens.c*/
+void					add_token(t_token **head, t_token *new);
+int						new_token(char *value, int was_quoted,
+							t_token **tokens);
+
 /*clean_line.c*/
 char					*clean_line(char *line);
 
@@ -262,6 +267,9 @@ void					init_clean_line_vars(t_clean_line *var, char *line);
 
 /*get_next_token.c*/
 char					*get_next_token(const char *line, int *i);
+char					*extract_quoted(const char *line, int *i);
+char					*extract_word(const char *line, int *i);
+char					*extract_segment(const char *line, int *i);
 
 /*get_token_type.c*/
 int						get_token_type(char *value, t_token **head);
@@ -301,6 +309,23 @@ char					*expand_string(const char *s, t_env *env_list,
 							int last_status);
 void					expand_tokens(t_token **tok, t_env *env_list,
 							int last_status);
+
+/*tokens_utils.c*/
+void					skip_spaces2(const char *line, int *i);
+int						find_equal_sign(const char *line, int i);
+int						check_assignment_quote(const char *line, int j, int *k,
+							char *quote);
+int						find_assignment_with_quote(const char *line, int i,
+							int *k, char *quote);
+char					*extract_token_value(const char *line, int *i);
+/*utils.c*/
+t_token					*process_expansion(t_token **head, t_token *tok,
+							t_env *env_list, int last_status);
+int						is_expandable_token(t_token *tok);
+t_token					*split_and_insert_tokens(t_token **head, t_token *tok,
+							char *str);
+void					free_words(char **words);
+void					build_tokens(t_split_utils *u, t_token *tok);
 
 /*===== BUILTINS =====*/
 
@@ -368,7 +393,8 @@ int						apply_redirections(t_redir *redir);
 
 /*heredoc.c*/
 void					ctrl_c_heredoc(int sig);
-void					handle_heredoc_input(t_shell *sh, const char *limiter, int fd);
+void					handle_heredoc_input(t_shell *sh, const char *limiter,
+							int fd);
 int						handle_heredoc(const char *limiter, t_shell *sh);
 
 /*pipex.c*/
@@ -382,6 +408,15 @@ void					update_prev_fd(int *prev_fd, t_command *cur);
 void					handle_pipe_iteration(t_command *cur, t_shell *sh,
 							int prev_fd);
 void					ft_pipe(t_shell *sh, int *last_status);
+
+/*exec_utils*/
+void					wait_for_single(pid_t pid, t_shell *sh);
+int						handle_redirections_and_save(t_command *cmd,
+							t_shell *sh, int *in_save, int *out_save);
+int						handle_exit_builtin(t_command *cmd, t_shell *sh,
+							int in_save, int out_save);
+void					handle_redir_without_cmd(t_command *cmd);
+void					restore_std_fds(int in_save, int out_save);
 
 /*===== SIGNAL =====*/
 

@@ -22,10 +22,12 @@ SRC_FILES = minishell.c
 PARSER_FILES = parser.c prompter.c tokens.c valid_quotes.c \
 		get_next_token.c get_token_type.c check_syntax.c \
 		error_syntax.c error_syntax_utils.c expand_tokens.c \
-		expand_tokens_utils.c clean_line.c clean_line_utils.c
+		expand_tokens_utils.c clean_line.c clean_line_utils.c \
+		build_tokens.c tokens_utils.c utils.c
 EXEC_FILES = commands_setup.c commands_utils.c commands.c \
 		redirections.c heredoc.c pipex.c exec.c path.c \
-		handle_command_error.c pipex_utils.c exec_utils.c
+		handle_command_error.c pipex_utils.c exec_utils.c \
+		exec_utils2.c
 SIGNAL_FILES = signal.c
 BUILTIN_FILES = exec_builtin.c ft_cd.c ft_echo.c ft_env.c \
 		ft_exit.c ft_export.c ft_pwd.c ft_unset.c ft_cd_env.c \

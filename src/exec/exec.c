@@ -3,27 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 22:36:03 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 12:27:23 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static void	wait_for_single(pid_t pid, t_shell *sh)
-{
-	int	status;
-
-	if (waitpid(pid, &status, 0) > 0)
-	{
-		if (WIFEXITED(status))
-			sh->last_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			sh->last_status = 128 + WTERMSIG(status);
-	}
-}
 
 int	exec_single_external(t_command *cmd, t_shell *sh)
 {
@@ -57,46 +44,13 @@ int	exec_single_builtin_cmd(t_command *cmd, t_shell *sh)
 	int	out_save;
 	int	status;
 
-	in_save = dup(STDIN_FILENO);
-	out_save = dup(STDOUT_FILENO);
-	if (cmd->redirs && apply_redirections(cmd->redirs) == ERROR)
-	{
-		dup2(in_save, STDIN_FILENO);
-		dup2(out_save, STDOUT_FILENO);
-		close(in_save);
-		close(out_save);
+	if (handle_redirections_and_save(cmd, sh, &in_save, &out_save))
 		return (sh->last_status);
-	}
-	if (!ft_strncmp(cmd->argv[0], "exit", 5) && cmd->argv[0][4] == '\0')
-	{
-		dup2(in_save, STDIN_FILENO);
-		dup2(out_save, STDOUT_FILENO);
-		close(in_save);
-		close(out_save);
-		ft_exit(cmd->argv, sh);
-	}
+	if (handle_exit_builtin(cmd, sh, in_save, out_save))
+		return (0);
 	status = exec_builtin(cmd->argv, sh);
-	dup2(in_save, STDIN_FILENO);
-	dup2(out_save, STDOUT_FILENO);
-	close(in_save);
-	close(out_save);
+	restore_std_fds(in_save, out_save);
 	return (status);
-}
-
-static void	handle_redir_without_cmd(t_command *cmd)
-{
-	int	in_save;
-	int	out_save;
-
-	in_save = dup(STDIN_FILENO);
-	out_save = dup(STDOUT_FILENO);
-	if (cmd->redirs)
-		apply_redirections(cmd->redirs);
-	dup2(in_save, STDIN_FILENO);
-	dup2(out_save, STDOUT_FILENO);
-	close(in_save);
-	close(out_save);
-	cleanup_heredocs_list(cmd);
 }
 
 int	exec_commands(t_shell *sh)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_tokens.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 23:26:21 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 11:34:15 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 12:42:16 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,100 +80,41 @@ char	*expand_string(const char *s, t_env *env_list, int last_status)
 	return (result);
 }
 
-static t_token **find_pp(t_token **head, t_token *tok)
+void	build_tokens(t_split_utils *u, t_token *tok)
 {
-    t_token **pp = head;
+	t_token	*n;
 
-    while (*pp && *pp != tok)
-        pp = &(*pp)->next;
-    return (pp);
-}
-
-static void build_tokens(t_split_utils *u, t_token *tok)
-{
-    t_token *n;
-
-    while (u->words[u->i])
-    {
-        n = malloc(sizeof(*n));
-        if (!n)
-            break;
-        ft_memset(n, 0, sizeof(*n));
-        if (u->i == 0)
-            n->type = tok->type;
-        else
-            n->type = T_ARG;
-        n->value = ft_strdup(u->words[u->i]);
-        n->was_quoted = tok->was_quoted;
-        if (u->last)
-            u->last->next = n;
-        else
-            u->first = n;
-        u->last = n;
-        u->i++;
-    }
-}
-
-static void free_words(char **words)
-{
-    int i;
-
-    i = 0;
-    while (words[i])
-        free(words[i++]);
-    free(words);
-}
-
-static t_token *split_and_insert_tokens(t_token **head,	t_token *tok, char *str)
-{
-    t_split_utils u;
-
-    u.words = ft_split(str, ' ');
-    if (!u.words)
-        return (NULL);
-    u.pp = find_pp(head, tok);
-    u.first = NULL;
-    u.last = NULL;
-    u.i = 0;
-    build_tokens(&u, tok);
-    if (u.last)
-    {
-        u.last->next = tok->next;
-        *(u.pp)      = u.first;
-    }
-    free(tok->value);
-    free(tok);
-    free_words(u.words);
-    if (u.last)
-        return (u.last->next);
-    return (NULL);
+	while (u->words[u->i])
+	{
+		n = malloc(sizeof(*n));
+		if (!n)
+			break ;
+		ft_memset(n, 0, sizeof(*n));
+		if (u->i == 0)
+			n->type = tok->type;
+		else
+			n->type = T_ARG;
+		n->value = ft_strdup(u->words[u->i]);
+		n->was_quoted = tok->was_quoted;
+		if (u->last)
+			u->last->next = n;
+		else
+			u->first = n;
+		u->last = n;
+		u->i++;
+	}
 }
 
 void	expand_tokens(t_token **head, t_env *env_list, int last_status)
 {
-	t_token *tok;
+	t_token	*tok;
 
 	tok = *head;
 	while (tok)
 	{
-		if (tok->type != T_PIPE && tok->type != T_INFILE_OPERATOR
-			&& tok->type != T_OUTFILE_OPERATOR && tok->type != T_APPEND_OPERATOR
-			&& tok->type != T_HEREDOC_OPERATOR)
-		{
-			char *old = tok->value;
-			char *new = expand_string(old, env_list, last_status);
-			if (new)
-			{
-				if (!tok->was_quoted && ft_strchr(new, ' '))
-				{
-					tok = split_and_insert_tokens(head, tok, new);
-					free(new);
-					continue ;
-				}
-				free(old);
-				tok->value = new;
-			}
-		}
-		tok = tok->next;
+		if (is_expandable_token(tok))
+			tok = process_expansion(head, tok, env_list, last_status);
+		else
+			tok = tok->next;
 	}
 }
