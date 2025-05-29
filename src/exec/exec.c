@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 12:27:23 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/05/29 14:29:39 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	exec_single_external(t_command *cmd, t_shell *sh)
 	}
 	else if (pid == 0)
 	{
+		b_sig();
 		if (apply_redirections(cmd->redirs) == ERROR)
 			exit(EXIT_FAILURE);
 		path = find_path(cmd->argv[0], sh->envp);

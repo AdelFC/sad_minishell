@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 12:40:45 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/05/29 14:29:41 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -425,6 +425,6 @@ extern int				g_sig;
 void					handle_sigint(int sig);
 void					handle_sigquit(int sig);
 void					init_signals(void);
-void					debug_print_tokens(t_token *tokens);
+void					b_sig(void);
 
 #endif

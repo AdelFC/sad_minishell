@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 10:57:59 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 21:59:17 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:26:20 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,14 @@ void	handle_sigint(int sig)
 void	handle_sigquit(int sig)
 {
 	(void)sig;
+	write(1, "Quit: 3\n", 8);
+	g_sig = 131;
+}
+
+void	b_sig(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }
 
 void	init_signals(void)

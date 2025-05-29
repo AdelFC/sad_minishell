@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:10:11 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 23:18:57 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:30:09 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	process_first(t_command *cmd, t_shell *sh)
 	}
 	close(cmd->fd[0]);
 	close(cmd->fd[1]);
+	b_sig();
 	if (apply_redirections(cmd->redirs) == ERROR)
 		exit(EXIT_FAILURE);
 	if (is_builtin(cmd->argv[0]) == ERROR)
@@ -42,8 +43,8 @@ void	process_first(t_command *cmd, t_shell *sh)
 
 void	setup_pipes(t_command *cmd, int prev_fd)
 {
-	if (dup2(prev_fd, STDIN_FILENO) == -1
-		|| dup2(cmd->fd[1], STDOUT_FILENO) == -1)
+	if (dup2(prev_fd, STDIN_FILENO) == -1 || dup2(cmd->fd[1], STDOUT_FILENO) ==
+		-1)
 	{
 		ft_printf_error(ERR_DUP2, strerror(errno));
 		exit(EXIT_FAILURE);
@@ -59,6 +60,7 @@ void	process_middle(int prev_fd, t_command *cmd, t_shell *sh)
 	int		status;
 
 	setup_pipes(cmd, prev_fd);
+	b_sig();
 	if (apply_redirections(cmd->redirs) == ERROR)
 		exit(EXIT_FAILURE);
 	if (is_builtin(cmd->argv[0]) == ERROR)
@@ -86,6 +88,7 @@ void	process_last(int prev_fd, t_command *cmd, t_shell *sh)
 		exit(EXIT_FAILURE);
 	}
 	close(prev_fd);
+	b_sig();
 	if (apply_redirections(cmd->redirs) == ERROR)
 		exit(EXIT_FAILURE);
 	if (is_builtin(cmd->argv[0]) == ERROR)

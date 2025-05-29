@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 13:25:04 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:30:03 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ int	main(int argc, char **argv, char **envp)
 	return ("UNKNOWN");
 }
 
-void	debug_print_tokens(t_token *tokens)
+static void	debug_print_tokens(t_token *tokens)
 {
 	while (tokens)
 	{
