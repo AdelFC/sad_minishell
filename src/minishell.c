@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 14:41:07 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 15:02:53 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ static int	handle_heredoc_and_exec(t_shell *sh)
 		return (ERROR);
 	}
 	exec_commands(sh);
+	cleanup_heredocs_list(sh->cmds);
 	free_commands(sh->cmds);
 	free_tokens(sh->tokens);
 	sh->cmds = NULL;

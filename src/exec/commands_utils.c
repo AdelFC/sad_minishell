@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 00:34:48 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:01:32 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 15:11:09 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ int	add_redir(t_command *cmd, int type, const char *filename)
 	if (!red)
 		return (ERROR);
 	red->type = type;
+	red->heredoc_fd = -1;
 	if (!filename)
 		return (free(red), ERROR);
 	red->filename = ft_strdup(filename);

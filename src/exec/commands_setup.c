@@ -21,6 +21,11 @@ static void	free_redirs(t_redir *redir)
 	while (cur)
 	{
 		next = cur->next;
+		if (cur->type == T_HEREDOC_DELIM && cur->heredoc_fd > 2)
+		{
+			close(cur->heredoc_fd);
+			cur->heredoc_fd = -1;
+		}
 		if (cur->filename)
 			free(cur->filename);
 		free(cur);
