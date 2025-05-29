@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_tokens.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 23:26:21 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 11:15:57 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/05/29 11:34:15 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,12 @@ static void	handle_dollar(t_expand_tok *v)
 	v->res = new;
 }
 
-static void	process_char_core(t_expand_tok *v, char c)
+static void	process_char(t_expand_tok *v)
 {
+	char	c;
 	char	next;
 
+	c = v->str[v->i];
 	if (c == '\'' && !v->in_dq)
 		v->in_sq = !v->in_sq;
 	else if (c == '"' && !v->in_sq)
@@ -64,48 +66,6 @@ static void	process_char_core(t_expand_tok *v, char c)
 	v->i++;
 }
 
-static void	process_char(t_expand_tok *v)
-{
-	process_char_core(v, v->str[v->i]);
-}
-
-// static void	process_char(t_expand_tok *v)
-// {
-// 	char	c;
-// 	char	next;
-
-// 	c = v->str[v->i];
-// 	if (c == '\'' && !v->in_dq)
-// 	{
-// 		v->in_sq = !v->in_sq;
-// 		v->i++;
-// 	}
-// 	else if (c == '"' && !v->in_sq)
-// 	{
-// 		v->in_dq = !v->in_dq;
-// 		v->i++;
-// 	}
-// 	else if (c == '$' && !v->in_sq)
-// 	{
-// 		next = v->str[v->i + 1];
-// 		if (next == '?' || ft_isalnum(next) || next == '_')
-// 		{
-// 			v->i++;
-// 			handle_dollar(v);
-// 		}
-// 		else
-// 		{
-// 			append_char(v, '$');
-// 			v->i++;
-// 		}
-// 	}
-// 	else
-// 	{
-// 		append_char(v, c);
-// 		v->i++;
-// 	}
-// }
-
 char	*expand_string(const char *s, t_env *env_list, int last_status)
 {
 	t_expand_tok	v;
@@ -120,21 +80,96 @@ char	*expand_string(const char *s, t_env *env_list, int last_status)
 	return (result);
 }
 
-void	expand_tokens(t_token *tok, t_env *env_list, int last_status)
+static t_token **find_pp(t_token **head, t_token *tok)
 {
-	char	*old;
-	char	*new;
+    t_token **pp = head;
 
+    while (*pp && *pp != tok)
+        pp = &(*pp)->next;
+    return (pp);
+}
+
+static void build_tokens(t_split_utils *u, t_token *tok)
+{
+    t_token *n;
+
+    while (u->words[u->i])
+    {
+        n = malloc(sizeof(*n));
+        if (!n)
+            break;
+        ft_memset(n, 0, sizeof(*n));
+        if (u->i == 0)
+            n->type = tok->type;
+        else
+            n->type = T_ARG;
+        n->value = ft_strdup(u->words[u->i]);
+        n->was_quoted = tok->was_quoted;
+        if (u->last)
+            u->last->next = n;
+        else
+            u->first = n;
+        u->last = n;
+        u->i++;
+    }
+}
+
+static void free_words(char **words)
+{
+    int i;
+
+    i = 0;
+    while (words[i])
+        free(words[i++]);
+    free(words);
+}
+
+static t_token *split_and_insert_tokens(t_token **head,	t_token *tok, char *str)
+{
+    t_split_utils u;
+
+    u.words = ft_split(str, ' ');
+    if (!u.words)
+        return (NULL);
+    u.pp = find_pp(head, tok);
+    u.first = NULL;
+    u.last = NULL;
+    u.i = 0;
+    build_tokens(&u, tok);
+    if (u.last)
+    {
+        u.last->next = tok->next;
+        *(u.pp)      = u.first;
+    }
+    free(tok->value);
+    free(tok);
+    free_words(u.words);
+    if (u.last)
+        return (u.last->next);
+    return (NULL);
+}
+
+void	expand_tokens(t_token **head, t_env *env_list, int last_status)
+{
+	t_token *tok;
+
+	tok = *head;
 	while (tok)
 	{
 		if (tok->type != T_PIPE && tok->type != T_INFILE_OPERATOR
 			&& tok->type != T_OUTFILE_OPERATOR && tok->type != T_APPEND_OPERATOR
 			&& tok->type != T_HEREDOC_OPERATOR)
 		{
-			old = tok->value;
-			new = expand_string(old, env_list, last_status);
+			char *old = tok->value;
+			char *new = expand_string(old, env_list, last_status);
 			if (new)
 			{
+				if (!tok->was_quoted && ft_strchr(new, ' '))
+				{
+					tok = split_and_insert_tokens(head, tok, new);
+					free(new);
+					continue ;
+				}
 				free(old);
 				tok->value = new;
 			}

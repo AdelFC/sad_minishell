@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 16:34:24 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 09:52:08 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 11:18:51 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	free_tokens(t_token *tokens)
 	}
 }
 
-static t_token	*create_token(int type, char *value)
+static t_token	*create_token(int type, char *value, int was_quoted)
 {
 	t_token	*token;
 
@@ -37,8 +37,10 @@ static t_token	*create_token(int type, char *value)
 		ft_printf_error("token error\n");
 		exit(EXIT_FAILURE);
 	}
+	ft_memset(token, 0, sizeof(t_token));
 	token->type = type;
 	token->value = value;
+	token->was_quoted = was_quoted;
 	token->next = NULL;
 	return (token);
 }
@@ -58,23 +60,74 @@ static void	add_token(t_token **head, t_token *new)
 	}
 }
 
-static int	new_token(char *value, t_token **tokens)
+static int	new_token(char *value, int was_quoted, t_token **tokens)
 {
 	t_token	*token;
 	int		type;
 
 	type = get_token_type(value, tokens);
-	token = create_token(type, value);
+	token = create_token(type, value, was_quoted);
 	if (!token)
 		return (ERROR);
 	add_token(tokens, token);
 	return (SUCCESS);
 }
 
+static char	*handle_eq_quote_case(char *value, int *was_quoted)
+{
+	t_get_token_utils	u;
+
+	u.eq = ft_strchr(value, '=');
+	if (u.eq && (u.eq[1] == '\'' || u.eq[1] == '"'))
+	{
+		u.quote = u.eq[1];
+		u.len = ft_strlen(u.eq + 1);
+		if (u.len > 2 && u.eq[1 + u.len - 1] == u.quote)
+		{
+			*was_quoted = 1;
+			u.before = ft_substr(value, 0, (u.eq - value) + 1);
+			u.stripped = ft_substr(u.eq + 2, 0, u.len - 2);
+			u.joined = join_and_free(u.before, u.stripped);
+			free(value);
+			if (!u.joined)
+				return (NULL);
+			return (u.joined);
+		}
+	}
+	return (NULL);
+}
+
+static char	*get_clean_token(char *line, int *i, int *was_quoted)
+{
+	char				*value;
+	char				*result;
+
+	*was_quoted = 0;
+	value = get_next_token(line, i);
+	if (!value)
+		return (NULL);
+	result = handle_eq_quote_case(value, was_quoted);
+	if (result)
+		return (result);
+	if ((value[0] == '\'' && value[ft_strlen(value) - 1] == '\'' && ft_strlen(value) > 1)
+		|| (value[0] == '"' && value[ft_strlen(value) - 1] == '"' && ft_strlen(value) > 1))
+	{
+		*was_quoted = 1;
+		result = ft_substr(value, 1, ft_strlen(value) - 2);
+		free(value);
+		if (result)
+			return (result);
+		else
+			return (NULL);
+	}
+	return (value);
+}
+
 int	tokenize(char *line, t_token **tokens)
 {
-	int		i;
-	char	*value;
+	int		  i;
+	int		  was_quoted;
+	char	 *value;
 
 	*tokens = NULL;
 	i = 0;
@@ -82,10 +135,10 @@ int	tokenize(char *line, t_token **tokens)
 		i++;
 	while (line[i])
 	{
-		value = get_next_token(line, &i);
+		value = get_clean_token(line, &i, &was_quoted);
 		if (!value)
 			return (free_tokens(*tokens), ERROR);
-		if (new_token(value, tokens) == ERROR)
+		if (new_token(value, was_quoted, tokens) == ERROR)
 			return (free(value), free_tokens(*tokens), ERROR);
 		while (line[i] && is_space(line[i]) == SUCCESS)
 			i++;

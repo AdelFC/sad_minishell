@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 23:05:05 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 11:29:36 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ typedef struct s_token
 {
 	int					type;
 	char				*value;
+	int					was_quoted;
 	struct s_token		*next;
 }						t_token;
 
@@ -162,8 +163,6 @@ typedef struct s_heredoc_utils
 	char				*cnt_str;
 	int					count;
 }						t_heredoc_utils;
-
-/*UTILS_STRUC*/
 
 typedef struct s_env_utils
 {
@@ -213,6 +212,25 @@ typedef struct s_sort_utils
 	size_t				len;
 	t_env				*curr;
 }						t_sort_utils;
+
+typedef struct s_get_token_utils
+{
+	char    *eq;
+	char     quote;
+	int      len;
+	char    *before;
+	char    *stripped;
+	char    *joined;
+}   t_get_token_utils;
+
+typedef struct s_split_utils
+{
+    char    **words;
+    t_token **pp;
+    t_token  *first;
+    t_token  *last;
+    int       i;
+}   t_split_utils;
 
 /*===== UTILS =====*/
 /*env_setup.c*/
@@ -281,7 +299,7 @@ void					append_char(t_expand_tok *v, char c);
 /* expand_tokens.c */
 char					*expand_string(const char *s, t_env *env_list,
 							int last_status);
-void					expand_tokens(t_token *tok, t_env *env_list,
+void					expand_tokens(t_token **tok, t_env *env_list,
 							int last_status);
 
 /*===== BUILTINS =====*/
@@ -372,5 +390,6 @@ extern int				g_sig;
 void					handle_sigint(int sig);
 void					handle_sigquit(int sig);
 void					init_signals(void);
+void					debug_print_tokens(t_token *tokens);
 
 #endif
