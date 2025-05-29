@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 14:30:03 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:35:10 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,8 @@ int	main(int argc, char **argv, char **envp)
 	char	*line;
 	int		last_status;
 
-	(void)argc;
-	(void)argv;
+	if (init_basics(argc, argv) == ERROR)
+		return (ERROR);
 	sh = init_shell_and_signals(envp);
 	if (!sh)
 		return (ERROR);

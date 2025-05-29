@@ -32,7 +32,8 @@ SIGNAL_FILES = signal.c
 BUILTIN_FILES = exec_builtin.c ft_cd.c ft_echo.c ft_env.c \
 		ft_exit.c ft_export.c ft_pwd.c ft_unset.c ft_cd_env.c \
 		ft_export_utils.c
-UTILS_FILES = env_setup.c shell_setup.c utils_parsing.c
+UTILS_FILES = env_setup.c shell_setup.c utils_parsing.c \
+		utils_main.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES)) \
 	   $(addprefix $(PARSER_DIR)/, $(PARSER_FILES)) \

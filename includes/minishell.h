@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 14:29:41 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:35:36 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,6 +233,10 @@ typedef struct s_split_utils
 }						t_split_utils;
 
 /*===== UTILS =====*/
+/*utils_main*/
+int						is_file(int fd);
+int						init_basics(int ac, char **av);
+
 /*env_setup.c*/
 t_env					*new_env(const char *name, const char *value);
 t_env					*init_env(char **envp);
