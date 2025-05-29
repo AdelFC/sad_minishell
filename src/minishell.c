@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 14:35:10 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/05/29 14:41:07 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static t_shell	*init_shell_and_signals(char **envp)
 	return (sh);
 }
 
-static int	handle_heredoc_and_exec(t_shell *sh, char *line)
+static int	handle_heredoc_and_exec(t_shell *sh)
 {
 	if (prepare_heredocs(sh->cmds, sh) == ERROR)
 	{
@@ -67,11 +67,9 @@ static int	handle_heredoc_and_exec(t_shell *sh, char *line)
 			free_tokens(sh->tokens);
 			sh->cmds = NULL;
 			sh->tokens = NULL;
-			free(line);
 			return (SUCCESS);
 		}
 		sh->last_status = 1;
-		free(line);
 		return (ERROR);
 	}
 	exec_commands(sh);
@@ -93,7 +91,7 @@ static int	process_line(char *line, t_shell *sh)
 	}
 	ret = parse_line(line, sh);
 	if (ret == SUCCESS)
-		handle_heredoc_and_exec(sh, line);
+		handle_heredoc_and_exec(sh);
 	free(line);
 	return (SUCCESS);
 }
