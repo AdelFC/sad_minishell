@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:10:11 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 14:30:09 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:53:33 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ void	process_first(t_command *cmd, t_shell *sh)
 
 void	setup_pipes(t_command *cmd, int prev_fd)
 {
-	if (dup2(prev_fd, STDIN_FILENO) == -1 || dup2(cmd->fd[1], STDOUT_FILENO) ==
-		-1)
+	if (dup2(prev_fd, STDIN_FILENO) == -1 || dup2(cmd->fd[1], STDOUT_FILENO)
+		== -1)
 	{
 		ft_printf_error(ERR_DUP2, strerror(errno));
 		exit(EXIT_FAILURE);
