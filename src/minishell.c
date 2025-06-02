@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 15:02:53 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/02 11:18:42 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,13 @@ static int	process_line(char *line, t_shell *sh)
 		return (ERROR);
 	}
 	ret = parse_line(line, sh);
-	if (ret == SUCCESS)
-		handle_heredoc_and_exec(sh);
+	if (ret != SUCCESS)
+	{
+		sh->last_status = 2;
+		free(line);
+		return (SUCCESS);
+	}
+	handle_heredoc_and_exec(sh);
 	free(line);
 	return (SUCCESS);
 }

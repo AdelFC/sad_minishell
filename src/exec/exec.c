@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 14:29:39 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/02 11:15:05 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,15 @@
 int	exec_single_external(t_command *cmd, t_shell *sh)
 {
 	pid_t	pid;
+	int		status;
 	char	*path;
 
 	pid = fork();
 	if (pid < 0)
 	{
 		ft_printf_error("minishell: fork failed\n");
-		return (sh->last_status);
+		sh->last_status = 1;
+		return (1);
 	}
 	else if (pid == 0)
 	{
@@ -35,7 +37,11 @@ int	exec_single_external(t_command *cmd, t_shell *sh)
 		free(path);
 		handle_command_error(sh, cmd, 126);
 	}
-	wait_for_single(pid, sh);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		sh->last_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		sh->last_status = 128 + WTERMSIG(status);
 	return (sh->last_status);
 }
 
