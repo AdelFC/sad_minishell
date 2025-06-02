@@ -3,14 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:16 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 21:45:22 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/02 11:49:41 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <errno.h>
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 static int	is_numeric(const char *s)
 {
@@ -49,8 +53,9 @@ static int	count_exit_args(char **argv)
 
 int	ft_exit(char **argv, t_shell *sh)
 {
-	long	code;
-	int		argc;
+	long long	code;
+	int			argc;
+	char		*endptr;
 
 	code = 0;
 	argc = count_exit_args(argv);
@@ -58,16 +63,18 @@ int	ft_exit(char **argv, t_shell *sh)
 		return (ft_printf_error(ERR_EXIT_TOO_MANY_ARGS), ERROR);
 	if (argc == 1)
 	{
-		if (is_numeric(argv[1]) == ERROR)
+		errno = 0;
+		code = strtoll(argv[1], &endptr, 10);
+		if (is_numeric(argv[1]) == ERROR || *endptr != '\0' || errno == ERANGE)
 		{
-			ft_printf_error(ERR_EXIT_NUM_ARG, argv[1]);
+			ft_printf_error("minishell: exit: %s: numeric argument required\n",
+				argv[1]);
 			free_shell(sh);
-			exit(2);
+			exit(255);
 		}
-		code = ft_atoi(argv[1]);
 	}
 	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO) && getppid() != 1)
 		printf("exit\n");
 	free_shell(sh);
-	exit((int)code);
+	exit((unsigned char)code);
 }
