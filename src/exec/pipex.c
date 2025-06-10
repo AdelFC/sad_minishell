@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:10:11 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 14:53:33 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:48:05 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	process_first(t_command *cmd, t_shell *sh)
 	{
 		status = exec_builtin(cmd->argv, sh);
 		free_shell(sh);
-		exit(status);
+		exit((unsigned char)status);
 	}
 	path = find_path(cmd->argv[0], sh->envp);
 	if (!path)
@@ -67,7 +67,7 @@ void	process_middle(int prev_fd, t_command *cmd, t_shell *sh)
 	{
 		status = exec_builtin(cmd->argv, sh);
 		free_shell(sh);
-		exit(status);
+		exit((unsigned char)status);
 	}
 	path = find_path(cmd->argv[0], sh->envp);
 	if (!path)
@@ -95,7 +95,7 @@ void	process_last(int prev_fd, t_command *cmd, t_shell *sh)
 	{
 		status = exec_builtin(cmd->argv, sh);
 		free_shell(sh);
-		exit(status);
+		exit((unsigned char)status);
 	}
 	path = find_path(cmd->argv[0], sh->envp);
 	if (!path)
@@ -107,21 +107,26 @@ void	process_last(int prev_fd, t_command *cmd, t_shell *sh)
 
 void	ft_pipe(t_shell *sh, int *last_status)
 {
-	int			prev_fd;
-	int			last_fd;
-	t_command	*cur;
+    int			prev_fd;
+    int			last_fd;
+    t_command	*cur;
+    int			status;
 
-	prev_fd = -1;
-	cur = sh->cmds;
-	while (cur)
-	{
-		handle_pipe_iteration(cur, sh, prev_fd);
-		update_prev_fd(&prev_fd, cur);
-		cur = cur->next;
-	}
-	last_fd = prev_fd;
-	while (wait(last_status) > 0)
-		continue ;
-	if (last_fd != -1)
-		close(last_fd);
+    prev_fd = -1;
+    cur = sh->cmds;
+    while (cur)
+    {
+        handle_pipe_iteration(cur, sh, prev_fd);
+        update_prev_fd(&prev_fd, cur);
+        cur = cur->next;
+    }
+    last_fd = prev_fd;
+    while (wait(&status) > 0)
+        *last_status = status;
+    if (last_fd != -1)
+        close(last_fd);
+    if (WIFEXITED(*last_status))
+        *last_status = WEXITSTATUS(*last_status);
+    else if (WIFSIGNALED(*last_status))
+        *last_status = 128 + WTERMSIG(*last_status);
 }
