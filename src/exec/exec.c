@@ -54,7 +54,7 @@ int	exec_single_builtin_cmd(t_command *cmd, t_shell *sh)
 	if (handle_redirections_and_save(cmd, sh, &in_save, &out_save))
 		return (sh->last_status);
 	if (handle_exit_builtin(cmd, sh, in_save, out_save))
-		return (0);
+		return (1);
 	status = exec_builtin(cmd->argv, sh);
 	restore_std_fds(in_save, out_save);
 	return (status);
