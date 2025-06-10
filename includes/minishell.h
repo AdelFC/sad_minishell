@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/10 13:55:32 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/10 14:27:14 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@
 # define ERROR -1
 
 # define ERR_MINISHELL_CMD_NOT_FOUND "minishell: %s: command not found\n"
-# define ERR_MINISHELL_PERMISSION "minishell: %s: permission denied\n"
+# define ERR_MINISHELL_PERMISSION "minishell: %s:  No such file or directory\n"
 
 # define ERR_CD_HOME_NOT_SET "minishell: cd: HOME not set\n"
 # define ERR_CD_TOO_MANY_ARGS "minishell: cd: too many arguments\n"
