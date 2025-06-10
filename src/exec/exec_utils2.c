@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 12:11:54 by barnaud           #+#    #+#             */
-/*   Updated: 2025/05/29 12:19:44 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/10 13:41:03 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	handle_redirections_and_save(t_command *cmd, t_shell *sh, int *in_save,
 	if (cmd->redirs && apply_redirections(cmd->redirs) == ERROR)
 	{
 		restore_std_fds(*in_save, *out_save);
+		sh->last_status = 1;
 		return (sh->last_status);
 	}
 	return (0);
