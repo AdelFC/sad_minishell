@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:19:17 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 22:21:04 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/04 11:45:01 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,12 @@ int	ft_cd(char **argv, t_env **env)
 	char	*target;
 
 	if (handle_cd_errors(argv, env, &target) == ERROR)
-		return (ERROR);
+		return (1);
 	if (chdir(target) != 0)
-		return (ft_printf_error(ERR_CD_NO_SUCH_DIR, target), ERROR);
+		return (ft_printf_error(ERR_CD_NO_SUCH_DIR, target), 1);
 	if (update_env_from_cwd(env, "OLDPWD", 1) == ERROR)
-		return (ERROR);
+		return (1);
 	if (update_env_from_cwd(env, "PWD", 0) == ERROR)
-		return (ERROR);
+		return (1);
 	return (SUCCESS);
 }

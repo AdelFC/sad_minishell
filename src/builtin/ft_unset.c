@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:05 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 22:22:05 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/04 11:36:51 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,12 @@ static int	process_unset_arg(const char *arg, t_env **env)
 
 	if (!arg[0] || !(ft_isalpha(arg[0]) || arg[0] == '_'))
 	{
-		ft_printf_error(ERR_EXPORT_VALID_ID, arg);
-		return (ERROR);
+		return (0);
 	}
 	res = remove_env_var(env, arg);
 	if (res == ERROR)
 	{
-		ft_printf_error(ERR_UNSET_NOT_FOUND);
-		return (ERROR);
+		return (0);
 	}
 	return (SUCCESS);
 }
@@ -64,8 +62,7 @@ int	ft_unset(char **argv, t_env **env)
 
 	if (!argv[1])
 	{
-		ft_printf_error(ERR_UNSET_NO_ARGS);
-		return (ERROR);
+		return (0);
 	}
 	status = SUCCESS;
 	i = 1;

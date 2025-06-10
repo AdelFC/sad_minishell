@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 10:57:59 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 14:26:20 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:55:10 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,11 @@ void	init_signals(void)
 	saa.sa_flags = SA_RESTART;
 	if (sigaction(SIGQUIT, &saa, NULL) == -1)
 		ft_printf_error("minishell: sigaction(SIGQUIT) failed\n");
+}
+
+void	sigpipe_handler(int sig)
+{
+    (void)sig;
+    ft_printf_error("minishell: write error: Broken pipe\n");
+    _exit(1);
 }

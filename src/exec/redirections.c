@@ -3,27 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 00:20:45 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 00:23:41 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/10 14:12:19 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	handle_infile(const char *filename)
+static int	handle_infile(const char *filename, int is_pipeline)
 {
 	int	fd;
 
 	if (!filename)
 	{
 		ft_printf_error("minishell: infile: filename is NULL\n");
-		return (ERROR);
+    	return (ERROR);
 	}
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
+        // Ne ferme stdout QUE dans un process pipeline
+        if (is_pipeline && !isatty(STDOUT_FILENO))
+            close(STDOUT_FILENO);
 		ft_printf_error(ERR_MINISHELL_PERMISSION, filename);
 		return (ERROR);
 	}
@@ -92,7 +95,7 @@ static int	apply_single_redir(t_redir *redir)
 	int	status;
 
 	if (redir->type == T_INFILE_FILE)
-		status = handle_infile(redir->filename);
+		status = handle_infile(redir->filename, 1);
 	else if (redir->type == T_OUTFILE_FILE)
 		status = handle_outfile(redir->filename);
 	else if (redir->type == T_APPEND_FILE)

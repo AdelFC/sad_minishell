@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:09 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 10:15:02 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/04 11:40:56 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,6 @@ int	ft_pwd(char **argv)
 	char	*cwd;
 
 	(void)argv;
-	if (argv[1])
-	{
-		ft_printf_error(ERR_PWD_TOO_MANY_ARGS);
-		return (ERROR);
-	}
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{

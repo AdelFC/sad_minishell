@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:13 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 21:55:29 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/04 11:27:03 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ static int	export_without_value(const char *arg, t_env **env)
 
 	name = get_var_name(arg);
 	if (!name)
-		return (ERROR);
+		return (1);
 	if (!env_get(*env, name))
 	{
 		ret = env_set(env, name, "");
 		if (ret == ERROR)
 		{
 			free(name);
-			return (ERROR);
+			return (1);
 		}
 	}
 	free(name);
@@ -53,14 +53,14 @@ static int	export_arg(const char *arg, t_env **env)
 
 	name = get_var_name(arg);
 	if (!name)
-		return (ERROR);
+		return (1);
 	if (is_valid_identifier(name) == ERROR)
-		ret = ERROR;
+		ret = 1;
 	else if (ft_strchr(arg, '='))
 		ret = export_with_value(arg, env);
 	else
 		ret = export_without_value(arg, env);
-	if (ret == ERROR)
+	if (ret == 1)
 		ft_printf_error("export: %s: not a valid identifier\n", arg);
 	free(name);
 	return (ret);
@@ -77,8 +77,8 @@ static int	process_export_args(char **argv, t_env **env)
 	while (argv[i])
 	{
 		ret = export_arg(argv[i], env);
-		if (ret == ERROR)
-			status = ERROR;
+		if (ret == 1)
+			status = 1;
 		i++;
 	}
 	return (status);

@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:10:11 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/10 13:48:05 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/10 14:00:23 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	process_first(t_command *cmd, t_shell *sh)
 	}
 	close(cmd->fd[0]);
 	close(cmd->fd[1]);
+	signal(SIGPIPE, sigpipe_handler);
 	b_sig();
 	if (apply_redirections(cmd->redirs) == ERROR)
 		exit(EXIT_FAILURE);
@@ -60,6 +61,7 @@ void	process_middle(int prev_fd, t_command *cmd, t_shell *sh)
 	int		status;
 
 	setup_pipes(cmd, prev_fd);
+	signal(SIGPIPE, sigpipe_handler);
 	b_sig();
 	if (apply_redirections(cmd->redirs) == ERROR)
 		exit(EXIT_FAILURE);
@@ -88,6 +90,7 @@ void	process_last(int prev_fd, t_command *cmd, t_shell *sh)
 		exit(EXIT_FAILURE);
 	}
 	close(prev_fd);
+	signal(SIGPIPE, sigpipe_handler);
 	b_sig();
 	if (apply_redirections(cmd->redirs) == ERROR)
 		exit(EXIT_FAILURE);

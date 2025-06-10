@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 22:25:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 22:28:27 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/10 14:00:04 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ void	handle_pipe_iteration(t_command *cur, t_shell *sh, int prev_fd)
 		ft_printf_error(ERR_FORK);
 	else if (pid == 0)
 	{
+		signal(SIGPIPE, sigpipe_handler);
+		b_sig();
 		if (!cur->next)
 			process_last(prev_fd, cur, sh);
 		else if (prev_fd == -1)

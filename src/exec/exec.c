@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/02 11:15:05 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/10 13:59:19 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	exec_single_external(t_command *cmd, t_shell *sh)
 	}
 	else if (pid == 0)
 	{
+		signal(SIGPIPE, sigpipe_handler);
 		b_sig();
 		if (apply_redirections(cmd->redirs) == ERROR)
 			exit(EXIT_FAILURE);
