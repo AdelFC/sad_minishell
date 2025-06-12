@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/02 11:18:42 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/12 11:47:52 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,23 +83,28 @@ static int	handle_heredoc_and_exec(t_shell *sh)
 
 static int	process_line(char *line, t_shell *sh)
 {
-	int	ret;
+    int	ret;
 
-	if (!line)
-	{
-		printf("exit\n");
-		return (ERROR);
-	}
-	ret = parse_line(line, sh);
-	if (ret != SUCCESS)
-	{
-		sh->last_status = 2;
-		free(line);
-		return (SUCCESS);
-	}
-	handle_heredoc_and_exec(sh);
-	free(line);
-	return (SUCCESS);
+    if (!line)
+    {
+        printf("exit\n");
+        return (ERROR);
+    }
+    if (line[0] == '\0')
+    {
+        free(line);
+        return (SUCCESS);
+    }
+    ret = parse_line(line, sh);
+    if (ret != SUCCESS)
+    {
+        sh->last_status = 2;
+        free(line);
+        return (SUCCESS);
+    }
+    handle_heredoc_and_exec(sh);
+    free(line);
+    return (SUCCESS);
 }
 
 int	main(int argc, char **argv, char **envp)
