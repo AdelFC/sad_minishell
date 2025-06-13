@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:14:26 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/12 12:04:47 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:07:02 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,8 @@ int	is_dir(const char *path, t_shell *data)
 void	handle_command_error(t_shell *sh, t_command *cmd, int err)
 {
 	if (is_in_charset(cmd->argv[0][0], "./") == 1
-        && is_executable(cmd->argv[0]) == FALSE)
-	err = is_dir(cmd->argv[0], sh);
+		&& is_executable(cmd->argv[0]) == FALSE)
+		err = is_dir(cmd->argv[0], sh);
 	if (err == 127)
 		ft_printf_error(ERR_MINISHELL_CMD_NOT_FOUND, cmd->argv[0]);
 	else if (err == 126)

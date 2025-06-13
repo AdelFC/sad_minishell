@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_commands.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 13:45:03 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 12:54:12 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/13 15:02:17 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,15 +73,15 @@ t_token	**split_commands(t_token *tokens)
 
 void	free_cmd_splits(t_token **cmd_splits)
 {
-    int	i;
+	int	i;
 
-    if (!cmd_splits)
-        return ;
-    i = 0;
-    while (cmd_splits[i])
-    {
-		free_tokens(cmd_splits[i]); // Libère les tokens dans chaque groupe
-        i++;
-    }
-    free(cmd_splits); // Libère le tableau lui-même
+	if (!cmd_splits)
+		return ;
+	i = 0;
+	while (cmd_splits[i])
+	{
+		free_tokens(cmd_splits[i]);
+		i++;
+	}
+	free(cmd_splits);
 }

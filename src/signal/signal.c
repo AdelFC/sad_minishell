@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 10:57:59 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/12 19:37:49 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/13 14:59:53 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	init_signals(void)
 
 void	sigpipe_handler(int sig)
 {
-    (void)sig;
-    ft_printf_error("minishell: write error: Broken pipe\n");
-    exit(1);
+	(void)sig;
+	ft_printf_error("minishell: write error: Broken pipe\n");
+	exit(1);
 }

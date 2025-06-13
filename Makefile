@@ -22,7 +22,7 @@ SRC_FILES = minishell.c
 PARSER_FILES = prompter.c parser.c valid_quotes.c clean_line.c tokens.c \
 		utils_token.c raw_tokens.c post_process_tokens.c get_token_type.c \
 		utils_functions.c utils_raw.c check_syntax.c error_syntax.c \
-		utils_error_syntax.c expand_tokens.c utils_extract_raw.c \
+		utils_error_syntax.c expand_tokens.c expand_tokens2.c utils_extract_raw.c \
 		split_commands.c build_commands.c utils_build_commands.c
 EXEC_FILES = commands_setup.c \
 		redirections.c heredoc.c pipex.c exec.c path.c \

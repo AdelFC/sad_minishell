@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_build_commands.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 13:36:13 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 13:14:06 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/13 15:01:38 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,28 +65,28 @@ int	add_argv(t_command *cmd, const char *arg)
 
 int	add_redir(t_command *cmd, int type, const char *filename)
 {
-    t_redir	*red;
-    t_redir	*cur;
+	t_redir	*red;
+	t_redir	*cur;
 
-    red = malloc(sizeof(*red));
-    if (!red)
-        return (ERROR);
-    red->type = type;
-    red->heredoc_fd = -1;
-    if (!filename)
-        return (free(red), ERROR);
-    red->filename = ft_strdup(filename);
-    if (!red->filename)
-        return (free(red), ERROR);
-    red->next = NULL;
-    if (!cmd->redirs)
-        cmd->redirs = red;
-    else
-    {
-        cur = cmd->redirs;
-        while (cur->next)
-            cur = cur->next;
-        cur->next = red;
-    }
-    return (SUCCESS);
+	red = malloc(sizeof(*red));
+	if (!red)
+		return (ERROR);
+	red->type = type;
+	red->heredoc_fd = -1;
+	if (!filename)
+		return (free(red), ERROR);
+	red->filename = ft_strdup(filename);
+	if (!red->filename)
+		return (free(red), ERROR);
+	red->next = NULL;
+	if (!cmd->redirs)
+		cmd->redirs = red;
+	else
+	{
+		cur = cmd->redirs;
+		while (cur->next)
+			cur = cur->next;
+		cur->next = red;
+	}
+	return (SUCCESS);
 }

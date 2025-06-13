@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 00:20:45 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/10 14:12:19 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:06:16 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,13 @@ static int	handle_infile(const char *filename, int is_pipeline)
 	if (!filename)
 	{
 		ft_printf_error("minishell: infile: filename is NULL\n");
-    	return (ERROR);
+		return (ERROR);
 	}
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
-        // Ne ferme stdout QUE dans un process pipeline
-        if (is_pipeline && !isatty(STDOUT_FILENO))
-            close(STDOUT_FILENO);
+		if (is_pipeline && !isatty(STDOUT_FILENO))
+			close(STDOUT_FILENO);
 		ft_printf_error(ERR_MINISHELL_PERMISSION, filename);
 		return (ERROR);
 	}
@@ -105,8 +104,7 @@ static int	apply_single_redir(t_redir *redir)
 		if (dup2(redir->heredoc_fd, STDIN_FILENO) < 0)
 		{
 			close(redir->heredoc_fd);
-			ft_printf_error("minishell: dup2 heredoc: %s\n",
-				strerror(errno));
+			ft_printf_error("minishell: dup2 heredoc: %s\n", strerror(errno));
 			return (ERROR);
 		}
 		close(redir->heredoc_fd);

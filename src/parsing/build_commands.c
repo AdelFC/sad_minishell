@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_commands.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 13:32:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 13:33:04 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/13 15:04:34 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ static int	handle_simple_token(t_command **cur, t_token *tok)
 
 static int	handle_redirection(t_command *cur, t_token **token_i)
 {
-	t_token		*t;
-	int			ret;
+	t_token	*t;
+	int		ret;
 
 	t = *token_i;
 	if (t->type == T_INFILE_OPERATOR)
@@ -70,31 +70,31 @@ static int	process_token(t_command **cur, t_token **token_i)
 
 static t_command	*build_commands_from_tokens(t_token *tokens)
 {
-    t_command	*head;
-    t_command	*current;
+	t_command	*head;
+	t_command	*current;
 
-    head = NULL;
-    current = NULL;
-    while (tokens)
-    {
-        if (tokens->type == T_PIPE)
-        {
-            tokens = tokens->next;
-            continue;
-        }
-        if (!current)
-        {
-            current = new_command();
-            if (!current)
-                return (NULL);
-            if (!head)
-                head = current;
-        }
-        if (process_token(&current, &tokens) == ERROR)
-            return (NULL);
-        tokens = tokens->next;
-    }
-    return (head);
+	head = NULL;
+	current = NULL;
+	while (tokens)
+	{
+		if (tokens->type == T_PIPE)
+		{
+			tokens = tokens->next;
+			continue ;
+		}
+		if (!current)
+		{
+			current = new_command();
+			if (!current)
+				return (NULL);
+			if (!head)
+				head = current;
+		}
+		if (process_token(&current, &tokens) == ERROR)
+			return (NULL);
+		tokens = tokens->next;
+	}
+	return (head);
 }
 
 t_command	*build_commands_from_splits(t_token **cmd_splits)
