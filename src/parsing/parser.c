@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:04:05 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 13:24:39 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/13 14:30:58 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@ int	parse_line(char *line, t_shell *sh)
 	// Vérification des quotes et nettoyage de la ligne
 	if (valid_quotes(line) == ERROR)
 	{
-		sh->last_status = 2;
+		sh->last_status = 1;
 		ft_printf_error(ERR_UNCLOSED_QUOTE);
 		return (ERROR);
 	}
 	clean = clean_line(line);
 	if (!clean || !*clean)
 	{
-		sh->last_status = 2;
+		sh->last_status = 1;
 		free(clean);
 		return (ERROR);
 	}
@@ -40,7 +40,7 @@ int	parse_line(char *line, t_shell *sh)
 	// Tokenisation
 	if (tokenize(clean, &tokens) == ERROR)
 	{
-		sh->last_status = 2;
+		sh->last_status = 1;
 		free(clean);
 		return (ERROR);
 	}
@@ -48,7 +48,7 @@ int	parse_line(char *line, t_shell *sh)
 	// Vérification de la syntaxe
 	if (check_syntax(tokens) == ERROR)
 	{
-		sh->last_status = 2;
+		sh->last_status = 1;
 		free_tokens(tokens);
 		free(clean);
 		return (ERROR);
@@ -62,7 +62,7 @@ int	parse_line(char *line, t_shell *sh)
 	cmd_splits = split_commands(tokens);
 	if (!cmd_splits)
 	{
-		sh->last_status = 2;
+		sh->last_status = 1;
 		free_tokens(tokens);
 		free(clean);
 		return (ERROR);
@@ -72,7 +72,7 @@ int	parse_line(char *line, t_shell *sh)
 	cmd_list = build_commands_from_splits(cmd_splits);
 	if (!cmd_list)
 	{
-		sh->last_status = 2;
+		sh->last_status = 1;
 		free_cmd_splits(cmd_splits);
 		free_tokens(tokens);
 		free(clean);

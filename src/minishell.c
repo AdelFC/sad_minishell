@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/12 11:48:58 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/13 14:31:00 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ static int	process_line(char *line, t_shell *sh)
     ret = parse_line(line, sh);
     if (ret != SUCCESS)
     {
-        sh->last_status = 2;
+        sh->last_status = 1;
         free(line);
         return (SUCCESS);
     }
