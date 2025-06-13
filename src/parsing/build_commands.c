@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands.c                                         :+:      :+:    :+:   */
+/*   build_commands.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/28 00:48:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/29 10:39:07 by afodil-c         ###   ########.fr       */
+/*   Created: 2025/06/12 13:32:36 by afodil-c          #+#    #+#             */
+/*   Updated: 2025/06/13 13:33:04 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,26 +68,62 @@ static int	process_token(t_command **cur, t_token **token_i)
 	return (r);
 }
 
-t_command	*build_commands_from_tokens(t_token *tokens)
+static t_command	*build_commands_from_tokens(t_token *tokens)
+{
+    t_command	*head;
+    t_command	*current;
+
+    head = NULL;
+    current = NULL;
+    while (tokens)
+    {
+        if (tokens->type == T_PIPE)
+        {
+            tokens = tokens->next;
+            continue;
+        }
+        if (!current)
+        {
+            current = new_command();
+            if (!current)
+                return (NULL);
+            if (!head)
+                head = current;
+        }
+        if (process_token(&current, &tokens) == ERROR)
+            return (NULL);
+        tokens = tokens->next;
+    }
+    return (head);
+}
+
+t_command	*build_commands_from_splits(t_token **cmd_splits)
 {
 	t_command	*head;
 	t_command	*current;
+	t_command	*prev;
+	int			i;
 
 	head = NULL;
-	current = NULL;
-	while (tokens)
+	prev = NULL;
+	i = 0;
+	while (cmd_splits[i])
 	{
+		current = build_commands_from_tokens(cmd_splits[i]);
 		if (!current)
 		{
-			current = new_command();
-			if (!current)
-				return (NULL);
-			if (!head)
-				head = current;
-		}
-		if (process_token(&current, &tokens) == ERROR)
+			if (head)
+				free_commands(head);
 			return (NULL);
-		tokens = tokens->next;
+		}
+		if (!head)
+			head = current;
+		if (prev)
+			prev->next = current;
+		while (current->next)
+			current = current->next;
+		prev = current;
+		i++;
 	}
 	return (head);
 }

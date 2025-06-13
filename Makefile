@@ -19,12 +19,12 @@ BUILTIN_DIR = $(SRC_DIR)/builtin
 UTILS_DIR = $(SRC_DIR)/utils
 
 SRC_FILES = minishell.c
-PARSER_FILES = parser.c prompter.c tokens.c valid_quotes.c \
-		get_next_token.c get_token_type.c check_syntax.c \
-		error_syntax.c error_syntax_utils.c expand_tokens.c \
-		expand_tokens_utils.c clean_line.c clean_line_utils.c \
-		build_tokens.c tokens_utils.c utils.c
-EXEC_FILES = commands_setup.c commands_utils.c commands.c \
+PARSER_FILES = prompter.c parser.c valid_quotes.c clean_line.c tokens.c \
+		utils_token.c raw_tokens.c post_process_tokens.c get_token_type.c \
+		utils_functions.c utils_raw.c check_syntax.c error_syntax.c \
+		utils_error_syntax.c expand_tokens.c utils_extract_raw.c \
+		split_commands.c build_commands.c utils_build_commands.c
+EXEC_FILES = commands_setup.c \
 		redirections.c heredoc.c pipex.c exec.c path.c \
 		handle_command_error.c pipex_utils.c exec_utils.c \
 		exec_utils2.c

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/25 23:44:12 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/27 18:00:36 by afodil-c         ###   ########.fr       */
+/*   Created: 2025/06/12 15:11:27 by afodil-c          #+#    #+#             */
+/*   Updated: 2025/06/12 15:12:57 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	process_regular_char(t_clean_line *var)
 {
 	if (var->space && var->j > 0)
 	{
-		char_buffer(var->res, &var->j, 32);
+		char_buffer(var->res, &var->j, ' ');
 		var->space = 0;
 	}
 	char_buffer(var->res, &var->j, var->line[var->i]);
@@ -31,8 +31,11 @@ static void	process_regular_char(t_clean_line *var)
 
 static void	process_operator(t_clean_line *var)
 {
-	if (var->j > 0 && var->res[var->j - 1] != 32)
-		char_buffer(var->res, &var->j, 32);
+	if (var->space && var->j > 0)
+	{
+		char_buffer(var->res, &var->j, ' ');
+		var->space = 0;
+	}
 	char_buffer(var->res, &var->j, var->line[var->i]);
 	if ((var->line[var->i] == '<' || var->line[var->i] == '>')
 		&& var->line[var->i + 1] == var->line[var->i])
@@ -40,25 +43,52 @@ static void	process_operator(t_clean_line *var)
 		char_buffer(var->res, &var->j, var->line[var->i + 1]);
 		var->i++;
 	}
-	if (is_space(var->line[var->i + 1]) == ERROR)
-		char_buffer(var->res, &var->j, 32);
+	if (var->line[var->i + 1] && !is_space(var->line[var->i + 1]))
+		char_buffer(var->res, &var->j, ' ');
 	var->i++;
 }
 
 static void	clean_line_loop(t_clean_line *var)
 {
+	char	c;
+
 	while (var->line[var->i])
 	{
-		if (var->line[var->i] == '\'' && !var->in_dquote)
+		c = var->line[var->i];
+		if ((c == '\'') && (!var->in_dquote))
+		{
+			if (var->space && var->j > 0)
+			{
+				char_buffer(var->res, &var->j, ' ');
+				var->space = 0;
+			}
 			var->in_squote = !var->in_squote;
-		else if (var->line[var->i] == '"' && !var->in_squote)
-			var->in_dquote = !var->in_dquote;
-		if ((unsigned char)var->line[var->i] < 32 && var->line[var->i] != '\t')
+			char_buffer(var->res, &var->j, c);
 			var->i++;
-		else if (is_operator(var->line[var->i]) == SUCCESS)
+			continue ;
+		}
+		if (c == '"' && !var->in_squote)
+		{
+			if (var->space && var->j > 0)
+			{
+				char_buffer(var->res, &var->j, ' ');
+				var->space = 0;
+			}
+			var->in_dquote = !var->in_dquote;
+			char_buffer(var->res, &var->j, c);
+			var->i++;
+			continue ;
+		}
+		if (var->in_squote || var->in_dquote)
+		{
+			char_buffer(var->res, &var->j, c);
+			var->i++;
+		}
+		else if ((unsigned char)c < 32 && c != '\t')
+			var->i++;
+		else if (is_operator(c) == SUCCESS)
 			process_operator(var);
-		else if (is_space(var->line[var->i]) == SUCCESS && !var->in_squote
-			&& !var->in_dquote)
+		else if (is_space(c) == SUCCESS)
 		{
 			var->space = 1;
 			var->i++;

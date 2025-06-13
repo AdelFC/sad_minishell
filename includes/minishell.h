@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/10 14:27:14 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/13 13:38:34 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@
 # define ERROR -1
 
 # define ERR_MINISHELL_CMD_NOT_FOUND "minishell: %s: command not found\n"
-# define ERR_MINISHELL_PERMISSION "minishell: %s:  No such file or directory\n"
+# define ERR_MINISHELL_PERMISSION "minishell: %s: Permission denied\n"
 
 # define ERR_CD_HOME_NOT_SET "minishell: cd: HOME not set\n"
 # define ERR_CD_TOO_MANY_ARGS "minishell: cd: too many arguments\n"
@@ -173,28 +173,6 @@ typedef struct s_env_utils
 	int					i;
 }						t_env_utils;
 
-typedef struct s_clean_line
-{
-	char				*res;
-	char				*line;
-	int					i;
-	int					j;
-	int					space;
-	int					in_squote;
-	int					in_dquote;
-}						t_clean_line;
-
-typedef struct s_expand_tok
-{
-	const char			*str;
-	t_env				*env_list;
-	int					last_status;
-	int					i;
-	int					in_sq;
-	int					in_dq;
-	char				*res;
-}						t_expand_tok;
-
 typedef struct s_sort_alpha
 {
 	t_env				*sorted;
@@ -213,15 +191,6 @@ typedef struct s_sort_utils
 	t_env				*curr;
 }						t_sort_utils;
 
-typedef struct s_get_token_utils
-{
-	char				*eq;
-	char				quote;
-	int					len;
-	char				*before;
-	char				*stripped;
-	char				*joined;
-}						t_get_token_utils;
 
 typedef struct s_split_utils
 {
@@ -246,37 +215,10 @@ void					free_env(t_env *env);
 t_shell					*init_shell(char **envp);
 void					free_shell(t_shell *sh);
 
-/*utils_parsing.c*/
-int						is_space(char c);
-int						is_operator(char c);
-int						skip_spaces(char *line);
-char					*ft_strjoin_nobug(const char *s1, const char *s2);
-char					*join_and_free(char *res, char *seg);
+
+
 
 /*===== PARSING =====*/
-/*tokens.c*/
-void					free_tokens(t_token *head);
-int						tokenize(char *line, t_token **tokens);
-
-/*build_tokens.c*/
-void					add_token(t_token **head, t_token *new);
-int						new_token(char *value, int was_quoted,
-							t_token **tokens);
-
-/*clean_line.c*/
-char					*clean_line(char *line);
-
-/*clean_line_utils.c*/
-void					init_clean_line_vars(t_clean_line *var, char *line);
-
-/*get_next_token.c*/
-char					*get_next_token(const char *line, int *i);
-char					*extract_quoted(const char *line, int *i);
-char					*extract_word(const char *line, int *i);
-char					*extract_segment(const char *line, int *i);
-
-/*get_token_type.c*/
-int						get_token_type(char *value, t_token **head);
 
 /*prompter.c*/
 char					*init_prompt(void);
@@ -286,6 +228,91 @@ int						parse_line(char *line, t_shell *sh);
 
 /*valid_quotes.c*/
 int						valid_quotes(char *line);
+
+/*clean_line.c*/
+typedef struct s_clean_line
+{
+	char				*res;
+	char				*line;
+	int					i;
+	int					j;
+	int					space;
+	int					in_squote;
+	int					in_dquote;
+}						t_clean_line;
+
+char					*clean_line(char *line);
+
+/*utils_functions.c*/
+char					*ft_strjoin_nobug(const char *s1, const char *s2);
+char					*join_and_free(char *res, char *seg);
+
+/*tokens.c*/
+t_token					*create_token(int type, char *value, int was_quoted);
+void					add_token(t_token **head, t_token *new);
+int						new_token(char *value, int was_quoted, t_token **tokens);
+int						tokenize(char *line, t_token **tokens);
+
+/*get_token_type.c*/
+int						get_token_type(char *value, t_token **head);
+
+/*raw_tokens.c*/
+typedef enum e_raw_type
+{
+	RAW_WORD,
+	RAW_OPERATOR
+}				t_raw_type;
+
+typedef struct s_raw
+{
+    char		*value;
+    t_raw_type	type;
+    struct s_raw *next;
+} t_raw;
+
+typedef struct s_raw_utils
+{
+    t_raw      *head;
+    t_raw      *last;
+    int         i;
+}               t_raw_utils;
+
+int						raw_tokenize(const char *line, t_raw **raw_tokens);
+char 					*extract_raw_operator(const char *line, int *i);
+char					*extract_raw_token(const char *line, int *i);
+char 					*extract_raw_quoted(const char *line, int *i);
+char 					*extract_raw_word_segment(const char *line, int *i);
+int						append_raw(t_raw **head, t_raw **last, char *value, t_raw_type type);
+void					free_raw_tokens(t_raw *raw_tokens);
+
+/*post_process_tokens.c*/
+typedef struct s_remove_quote_utils
+{
+    int		in_sq;
+    int		in_dq;
+    int		i;
+    int		j;
+    int		last_quote;
+    int		len;
+    char	*out;
+}	t_remove_quote_utils;
+
+typedef struct s_ppraw_utils
+{
+    char    *value;
+    int      was_quoted;
+    char    *key;
+    char    *val;
+    int      type;
+    t_token *token;
+}   t_ppraw_utils;
+
+int						post_process_raw(t_raw *raw_tokens, t_token **tokens_out);
+int						split_assignment_quoted(const char *raw_value, char **assign_key, char **assign_val, int *was_quoted);
+char					*remove_outer_quotes(char *str, int *was_quoted);
+
+/*token_utils.c*/
+void					free_tokens(t_token *tokens);
 
 /*check_syntax.c*/
 int						check_syntax(t_token *tokens);
@@ -300,36 +327,38 @@ int						is_pipe(int type);
 int						is_redir_op(int type);
 int						is_redir_file(int type);
 
-/* expand_utils.c */
-void					init_expand_tok(t_expand_tok *v, const char *s,
-							t_env *env_list, int last_status);
-char					*extract_var(t_expand_tok *v);
+/*expand_tokens.c*/
+typedef struct s_expand_tok
+{
+	const char	*str;
+    t_env 		*env_list;
+    int 		last_status;
+    int 		i;
+    int 		in_sq;
+    int 		in_dq;
+    char 		*res;
+} 			t_expand_tok;
+
+void					expand_tokens(t_token **tokens, t_env *env_list, int last_status);
+void					expand_token_value(t_token *token, t_env *env_list, int last_status);
+void					handle_dollar_sign(t_expand_tok *v, char **result);
+void					handle_single_quotes(const char *str, char **result, int *i);
+char					*strjoin_char(char *str, char c);
+void					init_expand_tok(t_expand_tok *v, const char *s, t_env *env_list, int last_status);
 char					*get_env_value(t_env *env_list, const char *key);
-char					*build_new_res(const char *old, const char *val);
-void					append_char(t_expand_tok *v, char c);
 
-/* expand_tokens.c */
-char					*expand_string(const char *s, t_env *env_list,
-							int last_status);
-void					expand_tokens(t_token **tok, t_env *env_list,
-							int last_status);
+/*split_commands.c*/
+t_token					**split_commands(t_token *tokens);
+void					free_cmd_splits(t_token **cmd_splits);
 
-/*tokens_utils.c*/
-void					skip_spaces2(const char *line, int *i);
-int						find_equal_sign(const char *line, int i);
-int						check_assignment_quote(const char *line, int j, int *k,
-							char *quote);
-int						find_assignment_with_quote(const char *line, int i,
-							int *k, char *quote);
-char					*extract_token_value(const char *line, int *i);
-/*utils.c*/
-t_token					*process_expansion(t_token **head, t_token *tok,
-							t_env *env_list, int last_status);
-int						is_expandable_token(t_token *tok);
-t_token					*split_and_insert_tokens(t_token **head, t_token *tok,
-							char *str);
-void					free_words(char **words);
-void					build_tokens(t_split_utils *u, t_token *tok);
+/*build_commands.c*/
+t_command	*build_commands_from_splits(t_token **cmd_splits);
+
+/*utils_build_commands.c*/
+t_command				*new_command(void);
+int						add_argv(t_command *cmd, const char *arg);
+int						add_redir(t_command *cmd, int type, const char *filename);
+
 
 /*===== BUILTINS =====*/
 
@@ -371,14 +400,7 @@ int						ft_unset(char **argv, t_env **env);
 /*commands_setup.c*/
 void					free_commands(t_command *cmds);
 
-/*commands_utils.c*/
-t_command				*new_command(void);
-int						add_argv(t_command *cmd, const char *arg);
-int						add_redir(t_command *cmd, int type,
-							const char *filename);
 
-/*commands.c*/
-t_command				*build_commands_from_tokens(t_token *tokens);
 
 /*handle_command_error.c*/
 void					handle_command_error(t_shell *sh, t_command *cmd,
@@ -421,6 +443,13 @@ int						handle_exit_builtin(t_command *cmd, t_shell *sh,
 							int in_save, int out_save);
 void					handle_redir_without_cmd(t_command *cmd);
 void					restore_std_fds(int in_save, int out_save);
+
+/*utils_parsing.c*/
+void		init_clean_line_vars(t_clean_line *var, char *line);
+int		is_space(char c);
+int		is_operator(char c);
+int		skip_spaces(char *line);
+
 
 /*===== SIGNAL =====*/
 

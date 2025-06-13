@@ -1,35 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   valid_quotes.c                                     :+:      :+:    :+:   */
+/*   utils_raw.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 18:31:42 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/08 18:28:11 by afodil-c         ###   ########.fr       */
+/*   Created: 2025/06/11 00:41:40 by afodil-c          #+#    #+#             */
+/*   Updated: 2025/06/11 00:41:51 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	valid_quotes(char *line)
+int	append_raw(t_raw **head, t_raw **last, char *value, t_raw_type type)
 {
-	int	i;
-	int	in_squote;
-	int	in_dquote;
+	t_raw	*node;
 
-	i = 0;
-	in_squote = 0;
-	in_dquote = 0;
-	while (line[i])
-	{
-		if (line[i] == 39 && !in_dquote)
-			in_squote = !in_squote;
-		if (line[i] == 34 && !in_squote)
-			in_dquote = !in_dquote;
-		i++;
-	}
-	if (in_squote || in_dquote)
+	node = malloc(sizeof(t_raw));
+	if (!node)
 		return (ERROR);
+	node->value = value;
+	node->type = type;
+	node->next = NULL;
+	if (!*head)
+		*head = node;
+	else
+		(*last)->next = node;
+	*last = node;
 	return (SUCCESS);
+}
+
+void	free_raw_tokens(t_raw *raw_tokens)
+{
+	t_raw	*cur;
+	t_raw	*next;
+
+	cur = raw_tokens;
+	while (cur)
+	{
+		next = cur->next;
+		free(cur->value);
+		free(cur);
+		cur = next;
+	}
 }
