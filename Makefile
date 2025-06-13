@@ -23,7 +23,8 @@ PARSER_FILES = prompter.c parser.c valid_quotes.c clean_line.c tokens.c \
 		utils_token.c raw_tokens.c post_process_tokens.c get_token_type.c \
 		utils_functions.c utils_raw.c check_syntax.c error_syntax.c \
 		utils_error_syntax.c expand_tokens.c expand_tokens2.c utils_extract_raw.c \
-		split_commands.c build_commands.c utils_build_commands.c
+		split_commands.c build_commands.c utils_build_commands.c expand_utils.c \
+		clean_line_U.c build_command2.c post_process_utils1.c post_process_utils2.c
 EXEC_FILES = commands_setup.c \
 		redirections.c heredoc.c pipex.c exec.c path.c \
 		handle_command_error.c pipex_utils.c exec_utils.c \

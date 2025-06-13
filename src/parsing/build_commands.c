@@ -6,32 +6,11 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 13:32:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 15:04:34 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:42:58 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int	handle_pipe(t_command **current)
-{
-	t_command	*next;
-
-	next = new_command();
-	if (!next)
-		return (ERROR);
-	(*current)->next = next;
-	*current = next;
-	return (SUCCESS);
-}
-
-static int	handle_simple_token(t_command **cur, t_token *tok)
-{
-	if (tok->type == T_CMD || tok->type == T_ARG)
-		return (add_argv(*cur, tok->value));
-	if (tok->type == T_PIPE)
-		return (handle_pipe(cur));
-	return (ERROR);
-}
 
 static int	handle_redirection(t_command *cur, t_token **token_i)
 {
@@ -97,6 +76,19 @@ static t_command	*build_commands_from_tokens(t_token *tokens)
 	return (head);
 }
 
+static int	link_command_lists(t_command **head, t_command **prev,
+		t_command *current)
+{
+	if (!*head)
+		*head = current;
+	if (*prev)
+		(*prev)->next = current;
+	while (current && current->next)
+		current = current->next;
+	*prev = current;
+	return (0);
+}
+
 t_command	*build_commands_from_splits(t_token **cmd_splits)
 {
 	t_command	*head;
@@ -105,6 +97,7 @@ t_command	*build_commands_from_splits(t_token **cmd_splits)
 	int			i;
 
 	head = NULL;
+	current = NULL;
 	prev = NULL;
 	i = 0;
 	while (cmd_splits[i])
@@ -116,13 +109,7 @@ t_command	*build_commands_from_splits(t_token **cmd_splits)
 				free_commands(head);
 			return (NULL);
 		}
-		if (!head)
-			head = current;
-		if (prev)
-			prev->next = current;
-		while (current->next)
-			current = current->next;
-		prev = current;
+		link_command_lists(&head, &prev, current);
 		i++;
 	}
 	return (head);

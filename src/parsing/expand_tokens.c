@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:13:57 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 15:17:10 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/13 15:33:01 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,29 +24,6 @@ void	init_expand_tok(t_expand_tok *v, const char *s, t_env *env_list,
 	v->res = ft_strdup("");
 }
 
-char	*strjoin_char(char *str, char c)
-{
-	size_t	len;
-	char	*result;
-
-	if (!str)
-		len = 0;
-	else
-		len = ft_strlen(str);
-	result = malloc(len + 2);
-	if (!result)
-	{
-		free(str);
-		return (NULL);
-	}
-	if (str)
-		ft_memcpy(result, str, len);
-	result[len] = c;
-	result[len + 1] = '\0';
-	free(str);
-	return (result);
-}
-
 char	*get_env_value(t_env *env_list, const char *key)
 {
 	t_env	*current;
@@ -61,24 +38,17 @@ char	*get_env_value(t_env *env_list, const char *key)
 	return (NULL);
 }
 
-void	handle_single_quotes(const char *str, char **result, int *i)
+static void	handle_dollar_special(t_expand_tok *v, char **result)
 {
-	*result = strjoin_char(*result, str[(*i)++]);
-	if (!*result)
-		return ;
-	while (str[*i] && str[*i] != '\'')
+	*result = strjoin_char(*result, '$');
+	if (v->str[v->i])
 	{
-		*result = strjoin_char(*result, str[(*i)++]);
-		if (!*result)
-			return ;
-	}
-	if (str[*i])
-	{
-		*result = strjoin_char(*result, str[(*i)++]);
+		*result = strjoin_char(*result, v->str[v->i]);
+		v->i++;
 	}
 }
 
-void	handle_dollar_sign(t_expand_tok *v, char **result)
+static char	*get_var_value(t_expand_tok *v)
 {
 	char	*var_name;
 	char	*var_value;
@@ -86,7 +56,6 @@ void	handle_dollar_sign(t_expand_tok *v, char **result)
 
 	var_name = NULL;
 	var_value = NULL;
-	v->i++;
 	if (v->str[v->i] == '?')
 	{
 		var_value = ft_itoa(v->last_status);
@@ -102,14 +71,19 @@ void	handle_dollar_sign(t_expand_tok *v, char **result)
 		var_value = get_env_value(v->env_list, var_name);
 		free(var_name);
 	}
-	else
+	return (var_value);
+}
+
+void	handle_dollar_sign(t_expand_tok *v, char **result)
+{
+	char	*var_value;
+
+	v->i++;
+	var_value = get_var_value(v);
+	if (!var_value && !(ft_isalpha(v->str[v->i - 1]) || v->str[v->i - 1] == '_'
+			|| v->str[v->i - 1] == '?'))
 	{
-		*result = strjoin_char(*result, '$');
-		if (v->str[v->i])
-		{
-			*result = strjoin_char(*result, v->str[v->i]);
-			v->i++;
-		}
+		handle_dollar_special(v, result);
 		return ;
 	}
 	if (!var_value)

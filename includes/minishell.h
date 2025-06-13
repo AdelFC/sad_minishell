@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 15:05:53 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/13 16:04:00 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,6 +238,9 @@ typedef struct s_clean_line
 }						t_clean_line;
 
 char					*clean_line(char *line);
+void					process_operator(t_clean_line *var);
+void					process_regular_char(t_clean_line *var);
+void					char_buffer(char *res, int *j, char c);
 
 /*utils_functions.c*/
 char					*ft_strjoin_nobug(const char *s1, const char *s2);
@@ -312,6 +315,22 @@ int						split_assignment_quoted(const char *raw_value,
 							int *was_quoted);
 char					*remove_outer_quotes(char *str, int *was_quoted);
 
+/*post_process_utils.c*/
+int						handle_assignment_case(t_ppraw_utils *raw);
+int						handle_assignment_or_quotes(t_ppraw_utils *raw,
+							t_raw *cur);
+int						check_token_creation_error(t_ppraw_utils *raw,
+							t_token **tokens_out);
+int						create_and_add_token(t_ppraw_utils *raw,
+							t_token **tokens_out);
+void					free_ppraw_utils(t_ppraw_utils *raw);
+void					init_remove_quote_utils(t_remove_quote_utils *rq,
+							char *str);
+int						get_assignment_indices(const char *raw_value,
+							int *eq_idx, int *quote_idx, char *quote);
+void					remove_outer_quotes_loop(t_remove_quote_utils *rq,
+							char *str, int *was_quoted);
+
 /*token_utils.c*/
 void					free_tokens(t_token *tokens);
 
@@ -358,6 +377,8 @@ void					free_cmd_splits(t_token **cmd_splits);
 
 /*build_commands.c*/
 t_command				*build_commands_from_splits(t_token **cmd_splits);
+int						handle_simple_token(t_command **cur, t_token *tok);
+int						handle_pipe(t_command **current);
 
 /*utils_build_commands.c*/
 t_command				*new_command(void);
