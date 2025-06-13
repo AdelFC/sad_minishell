@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 22:25:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/10 14:00:04 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/13 14:53:42 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,11 @@ void	update_prev_fd(int *prev_fd, t_command *cur)
 			close(*prev_fd);
 		*prev_fd = cur->fd[0];
 	}
+	else if (*prev_fd != -1)
+	{
+		close(*prev_fd);
+		*prev_fd = -1;
+	}
 }
 
 void	handle_pipe_iteration(t_command *cur, t_shell *sh, int prev_fd)
@@ -28,10 +33,16 @@ void	handle_pipe_iteration(t_command *cur, t_shell *sh, int prev_fd)
 	pid_t	pid;
 
 	if (cur->next && pipe(cur->fd) < 0)
+	{
 		ft_printf_error(ERR_PIPE);
+		exit(1);
+	}
 	pid = fork();
 	if (pid < 0)
+	{
 		ft_printf_error(ERR_FORK);
+		exit(1);
+	}
 	else if (pid == 0)
 	{
 		signal(SIGPIPE, sigpipe_handler);
@@ -42,5 +53,6 @@ void	handle_pipe_iteration(t_command *cur, t_shell *sh, int prev_fd)
 			process_first(cur, sh);
 		else
 			process_middle(prev_fd, cur, sh);
+		exit(EXIT_FAILURE);
 	}
 }

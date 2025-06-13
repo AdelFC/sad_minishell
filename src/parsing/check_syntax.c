@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 13:12:33 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/10 13:19:28 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/13 14:44:07 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	check_syntax(t_token *tokens)
 	if (error_double_pipe(tokens) == ERROR)
 		return (ERROR);
 	if (error_redirection(tokens) == ERROR)
-		return (ERROR);
+		return (SUCCESS);
 	if (error_double_semicolon(tokens) == ERROR)
 		return (ERROR);
 	if (error_parenthesis(tokens) == ERROR)
