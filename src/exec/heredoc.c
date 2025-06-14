@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:09:51 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/02 11:18:27 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/14 11:15:11 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ static int	parent_heredoc_process(int status)
 	fd = open(".heredoc.tmp", O_RDONLY, 0644);
 	if (fd < 0)
 		return (1);
+	unlink(".heredoc.tmp");
 	return (fd);
 }
 

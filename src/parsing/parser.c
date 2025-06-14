@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:04:05 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 15:13:40 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/14 11:17:54 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	handle_tokenize_and_syntax(char *clean, t_shell *sh,
 	}
 	if (check_syntax(*tokens) == ERROR)
 	{
-		sh->last_status = 1;
+		sh->last_status = 2;
 		free_tokens(*tokens);
 		free(clean);
 		return (ERROR);
