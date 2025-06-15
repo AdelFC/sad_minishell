@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:09:51 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/14 11:15:11 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/15 14:32:55 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,14 @@ static int	parent_heredoc_process(int status)
 	if (WIFSIGNALED(status))
 	{
 		g_sig = 128 + WTERMSIG(status);
-		return (128 + WTERMSIG(status));
+		unlink(".heredoc.tmp");
+		return (-1);
 	}
 	if (WEXITSTATUS(status) == 130)
 	{
 		g_sig = 130;
-		return (130);
+		unlink(".heredoc.tmp");
+		return (-1);
 	}
 	if (WEXITSTATUS(status) != 0)
 		return (WEXITSTATUS(status));
