@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:10:11 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/15 15:33:40 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/15 17:00:21 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,26 +128,33 @@ void	process_last(int prev_fd, t_command *cmd, t_shell *sh)
 
 void	ft_pipe(t_shell *sh, int *last_status)
 {
-	int			prev_fd;
-	int			last_fd;
-	t_command	*cur;
-	int			status;
+    int			prev_fd;
+    int			last_fd;
+    t_command	*cur;
+    int			status;
 
-	prev_fd = -1;
-	cur = sh->cmds;
-	while (cur)
-	{
-		handle_pipe_iteration(cur, sh, prev_fd);
-		update_prev_fd(&prev_fd, cur);
-		cur = cur->next;
-	}
-	last_fd = prev_fd;
-	while (wait(&status) > 0)
-		*last_status = status;
-	if (last_fd != -1)
-		close(last_fd);
-	if (WIFEXITED(*last_status))
-		*last_status = WEXITSTATUS(*last_status);
-	else if (WIFSIGNALED(*last_status))
-		*last_status = 128 + WTERMSIG(*last_status);
+    prev_fd = -1;
+    cur = sh->cmds;
+    while (cur)
+    {
+        handle_pipe_iteration(cur, sh, prev_fd);
+        update_prev_fd(&prev_fd, cur);
+        cur = cur->next;
+    }
+    last_fd = prev_fd;
+    while (wait(&status) > 0)
+    {
+        if (WIFSIGNALED(status) && WTERMSIG(status) == SIGPIPE)
+        {
+            *last_status = 0;
+            continue;
+        }
+        *last_status = status;
+    }
+    if (last_fd != -1)
+        close(last_fd);
+    if (WIFEXITED(*last_status))
+        *last_status = WEXITSTATUS(*last_status);
+    else if (WIFSIGNALED(*last_status))
+        *last_status = 128 + WTERMSIG(*last_status);
 }
