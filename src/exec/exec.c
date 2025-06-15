@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/10 13:59:19 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/15 15:39:05 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ int	exec_single_external(t_command *cmd, t_shell *sh)
 		signal(SIGPIPE, sigpipe_handler);
 		b_sig();
 		if (apply_redirections(cmd->redirs) == ERROR)
+		{
+			free_shell(sh);
 			exit(EXIT_FAILURE);
+		}
 		path = find_path(cmd->argv[0], sh->envp);
 		if (!path)
 			handle_command_error(sh, cmd, 127);
@@ -66,10 +69,11 @@ int	exec_commands(t_shell *sh)
 	t_command	*cmd;
 
 	cmd = sh->cmds;
-	if (!cmd || !cmd->argv || !cmd->argv[0])
+	if (!cmd || !cmd->argv || !cmd->argv[0] || cmd->argv[0][0] == 0)
 	{
 		if (cmd && cmd->redirs)
 			handle_redir_without_cmd(cmd);
+		sh->last_status = 0;
 		return (sh->last_status);
 	}
 	if (!cmd->next)

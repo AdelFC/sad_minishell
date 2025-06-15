@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 16:04:00 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/15 15:52:30 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -374,6 +374,9 @@ char					*get_env_value(t_env *env_list, const char *key);
 /*split_commands.c*/
 t_token					**split_commands(t_token *tokens);
 void					free_cmd_splits(t_token **cmd_splits);
+/*clean_cmd_list.c*/
+void					clean_leading_empty_argv(t_command *cmd);
+
 
 /*build_commands.c*/
 t_command				*build_commands_from_splits(t_token **cmd_splits);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:10:11 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 15:08:06 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/15 15:33:40 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	process_first(t_command *cmd, t_shell *sh)
 	b_sig();
 	if (apply_redirections(cmd->redirs) == ERROR)
 		exit(EXIT_FAILURE);
+	if (!cmd->argv[0] || cmd->argv[0][0] == 0)
+		exit(0);
 	if (is_builtin(cmd->argv[0]))
 	{
 		status = exec_builtin(cmd->argv, sh);
@@ -69,6 +71,8 @@ void	process_middle(int prev_fd, t_command *cmd, t_shell *sh)
 	b_sig();
 	if (apply_redirections(cmd->redirs) == ERROR)
 		exit(EXIT_FAILURE);
+	if (!cmd->argv[0] || cmd->argv[0][0] == 0)
+		exit(0);
 	if (is_builtin(cmd->argv[0]))
 	{
 		status = exec_builtin(cmd->argv, sh);
@@ -102,6 +106,8 @@ void	process_last(int prev_fd, t_command *cmd, t_shell *sh)
 	b_sig();
 	if (apply_redirections(cmd->redirs) == ERROR)
 		exit(EXIT_FAILURE);
+	if (!cmd->argv[0] || cmd->argv[0][0] == 0)
+		exit(0);
 	if (is_builtin(cmd->argv[0]))
 	{
 		status = exec_builtin(cmd->argv, sh);
