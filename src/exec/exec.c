@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 10:18:46 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 11:29:09 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static void	child_process_exec(t_command *cmd, t_shell *sh)
 {
 	char	*path;
+	char	**envp;
 
 	signal(SIGPIPE, sigpipe_handler);
 	b_sig();
@@ -23,10 +24,12 @@ static void	child_process_exec(t_command *cmd, t_shell *sh)
 		free_shell(sh);
 		exit(EXIT_FAILURE);
 	}
-	path = find_path(cmd->argv[0], sh->envp);
+	path = find_path(cmd->argv[0], sh->env);
 	if (!path)
 		handle_command_error(sh, cmd, 127);
-	execve(path, cmd->argv, sh->envp);
+	envp = env_list_to_array(sh->env);
+	execve(path, cmd->argv, envp);
+	free_array(envp);
 	free(path);
 	handle_command_error(sh, cmd, 126);
 }

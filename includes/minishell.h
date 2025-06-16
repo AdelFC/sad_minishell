@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 10:16:20 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 11:29:53 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -438,13 +438,17 @@ int						is_executable(const char *path);
 int						is_dir(const char *path, t_shell *data);
 int						is_in_charset(char c, const char *charset);
 
+/*new_env.c*/
+char					**env_list_to_array(t_env *env);
+void					free_array(char **arr);
+
 /*exec.c*/
 int						exec_commands(t_shell *sh);
 void					cleanup_heredocs_list(t_command *cmd);
 
 /*path.c*/
 char					*join_path(const char *dir, const char *cmd);
-char					*find_path(const char *cmd, char **envp);
+char					*find_path(const char *cmd, t_env *env);
 
 /*redirections.c*/
 int						apply_redirections(t_redir *redir);

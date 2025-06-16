@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:05:21 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/05/28 00:44:40 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 11:34:56 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,26 +52,22 @@ char	*join_path(const char *dir, const char *cmd)
 	return (full);
 }
 
-static char	**get_path_dirs(char **envp)
+static char	*get_env_v(t_env *env, const char *name)
 {
-	int		i;
-	char	*path_val;
-	char	**dirs;
-
-	i = 0;
-	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
-		i++;
-	if (!envp[i])
-		return (NULL);
-	path_val = envp[i] + 5;
-	dirs = ft_split(path_val, ':');
-	return (dirs);
+	while (env)
+	{
+		if (ft_strncmp(env->name, name, ft_strlen(name) + 1) == 0)
+			return (env->value);
+		env = env->next;
+	}
+	return (NULL);
 }
 
-char	*find_path(const char *cmd, char **envp)
+char	*find_path(const char *cmd, t_env *env)
 {
 	char	**dirs;
 	char	*candidate;
+	char	*path_val;
 	int		j;
 
 	if (ft_strchr(cmd, '/'))
@@ -80,7 +76,10 @@ char	*find_path(const char *cmd, char **envp)
 			return (ft_strdup(cmd));
 		return (NULL);
 	}
-	dirs = get_path_dirs(envp);
+	path_val = get_env_v(env, "PATH");
+	if (!path_val)
+		return (NULL);
+	dirs = ft_split(path_val, ':');
 	if (!dirs)
 		return (NULL);
 	j = 0;
