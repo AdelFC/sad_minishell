@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 11:29:53 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:45:19 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -460,7 +460,7 @@ void					handle_heredoc_input(t_shell *sh, const char *limiter,
 int						handle_heredoc(const char *limiter, t_shell *sh);
 
 /*pipex.c*/
-
+void					end_f(t_command *cmd, t_shell *sh);
 void					process_first(t_command *cmd, t_shell *sh);
 void					setup_pipes(t_command *cmd, int prev_fd);
 void					process_middle(int prev_fd, t_command *cmd,

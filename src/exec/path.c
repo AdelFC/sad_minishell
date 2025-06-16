@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:05:21 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 11:34:56 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:42:40 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,31 @@ static char	*get_env_v(t_env *env, const char *name)
 	return (NULL);
 }
 
+static char	*search_in_path(const char *cmd, char **dirs)
+{
+	char	*candidate;
+	int		j;
+
+	j = 0;
+	while (dirs[j])
+	{
+		candidate = join_path(dirs[j], cmd);
+		if (candidate && access(candidate, X_OK) == 0)
+		{
+			ft_free_array(dirs);
+			return (candidate);
+		}
+		free(candidate);
+		j++;
+	}
+	ft_free_array(dirs);
+	return (NULL);
+}
+
 char	*find_path(const char *cmd, t_env *env)
 {
 	char	**dirs;
-	char	*candidate;
 	char	*path_val;
-	int		j;
 
 	if (ft_strchr(cmd, '/'))
 	{
@@ -82,15 +101,5 @@ char	*find_path(const char *cmd, t_env *env)
 	dirs = ft_split(path_val, ':');
 	if (!dirs)
 		return (NULL);
-	j = 0;
-	while (dirs[j])
-	{
-		candidate = join_path(dirs[j], cmd);
-		if (candidate && access(candidate, X_OK) == 0)
-			return (ft_free_array(dirs), candidate);
-		free(candidate);
-		j++;
-	}
-	ft_free_array(dirs);
-	return (NULL);
+	return (search_in_path(cmd, dirs));
 }

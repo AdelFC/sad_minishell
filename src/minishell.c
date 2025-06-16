@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 11:51:58 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:47:01 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,8 @@ int	main(int argc, char **argv, char **envp)
 
 	if (init_basics(argc, argv) == ERROR)
 		return (ERROR);
-	// if (!isatty(0) || !isatty(1))
-		// return (printf("Erreur\n"), 1);
+	if (!isatty(0) || !isatty(1))
+		return (printf("Erreur\n"), 1);
 	sh = init_shell_and_signals(envp);
 	if (!sh)
 		return (ERROR);
