@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 22:46:24 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/15 16:23:01 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 09:50:27 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,28 +31,30 @@ int	is_redir_file(int type)
 
 int	error_redirection(t_token *tokens)
 {
-    t_token	*cur;
+	t_token	*cur;
 
-    cur = tokens;
-    while (cur)
-    {
-        if (is_redir_op(cur->type))
-        {
-            if (!cur->next)
-            {
-                ft_printf_error("syntax error near unexpected token `newline`\n");
-                return (ERROR);
-            }
-            if (!is_redir_file(cur->next->type) && !(
-                    cur->next->type == T_CMD || cur->next->type == T_ARG))
-            {
-                ft_printf_error("syntax error near unexpected token `%s`\n", cur->next->value);
-                return (ERROR);
-            }
-        }
-        cur = cur->next;
-    }
-    return (SUCCESS);
+	cur = tokens;
+	while (cur)
+	{
+		if (is_redir_op(cur->type))
+		{
+			if (!cur->next)
+			{
+				ft_printf_error
+				("syntax error near unexpected token `newline`\n");
+				return (ERROR);
+			}
+			if (!is_redir_file(cur->next->type) && !(cur->next->type == T_CMD
+					|| cur->next->type == T_ARG))
+			{
+				ft_printf_error("syntax error near unexpected token `%s`\n",
+					cur->next->value);
+				return (ERROR);
+			}
+		}
+		cur = cur->next;
+	}
+	return (SUCCESS);
 }
 
 int	error_double_semicolon(t_token *tokens)

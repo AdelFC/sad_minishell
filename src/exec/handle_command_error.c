@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   handle_command_error.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:14:26 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 15:07:02 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/16 10:15:47 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_shell_script(const char *path)
+int	is_shell_script(const char *path)
 {
 	int		file;
 	char	shebang[3];
@@ -27,7 +27,7 @@ static int	is_shell_script(const char *path)
 	return (ft_strncmp(shebang, "#!", ft_strlen("shebang")));
 }
 
-static int	is_binary_executable(const char *path)
+int	is_binary_executable(const char *path)
 {
 	int		file;
 	char	buf[4];
@@ -38,9 +38,9 @@ static int	is_binary_executable(const char *path)
 	ft_memset(buf, 0, 4);
 	close(file);
 	return (ft_memcmp(buf,
-						"\x7f"
-						"ELF",
-						4));
+			"\x7f"
+			"ELF",
+			4));
 }
 
 int	is_executable(const char *path)
@@ -54,58 +54,38 @@ int	is_executable(const char *path)
 	return (0);
 }
 
-int	is_in_charset(char c, const char *charset)
+static int	is_dir_handle_error(const char *path, t_shell *data)
 {
-	if (!charset || !c)
-		return (0);
-	while (*charset)
-		if (c == *charset++)
-			return (1);
-	return (0);
+	int	temp;
+
+	temp = open(path, O_RDONLY);
+	if (errno == EACCES)
+	{
+		data->last_status = 126;
+		return (126);
+	}
+	data->last_status = 127;
+	return (127);
 }
 
 int	is_dir(const char *path, t_shell *data)
 {
-	int	temp;
 	DIR	*fd;
+	int	ret;
 
 	fd = opendir(path);
 	if (fd == NULL)
 	{
-		temp = open(path, O_RDONLY);
-		if (errno == EACCES)
+		ret = is_dir_handle_error(path, data);
+		if (ret == 127)
 		{
-			data->last_status = 126;
-			return (126);
+			write(2, " ", 1);
+			ft_putendl_fd(strerror(errno), 2);
 		}
-		else
-		{
-			data->last_status = 127;
-			return (127);
-		}
-		write(2, " ", 1);
-		ft_putendl_fd(strerror(errno), 2);
-		if (temp != -1)
-			close(temp);
+		return (ret);
 	}
-	else
-	{
-		data->last_status = 126;
-		ft_putendl_fd(" Is a directory\n", 2);
-		closedir(fd);
-		return (126);
-	}
-}
-
-void	handle_command_error(t_shell *sh, t_command *cmd, int err)
-{
-	if (is_in_charset(cmd->argv[0][0], "./") == 1
-		&& is_executable(cmd->argv[0]) == FALSE)
-		err = is_dir(cmd->argv[0], sh);
-	if (err == 127)
-		ft_printf_error(ERR_MINISHELL_CMD_NOT_FOUND, cmd->argv[0]);
-	else if (err == 126)
-		ft_printf_error(ERR_MINISHELL_PERMISSION, cmd->argv[0]);
-	free_shell(sh);
-	exit(err);
+	data->last_status = 126;
+	ft_putendl_fd(" Is a directory\n", 2);
+	closedir(fd);
+	return (126);
 }

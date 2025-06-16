@@ -6,17 +6,35 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/15 15:39:05 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 10:18:46 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static void	child_process_exec(t_command *cmd, t_shell *sh)
+{
+	char	*path;
+
+	signal(SIGPIPE, sigpipe_handler);
+	b_sig();
+	if (apply_redirections(cmd->redirs) == ERROR)
+	{
+		free_shell(sh);
+		exit(EXIT_FAILURE);
+	}
+	path = find_path(cmd->argv[0], sh->envp);
+	if (!path)
+		handle_command_error(sh, cmd, 127);
+	execve(path, cmd->argv, sh->envp);
+	free(path);
+	handle_command_error(sh, cmd, 126);
+}
+
 int	exec_single_external(t_command *cmd, t_shell *sh)
 {
 	pid_t	pid;
 	int		status;
-	char	*path;
 
 	pid = fork();
 	if (pid < 0)
@@ -26,21 +44,7 @@ int	exec_single_external(t_command *cmd, t_shell *sh)
 		return (1);
 	}
 	else if (pid == 0)
-	{
-		signal(SIGPIPE, sigpipe_handler);
-		b_sig();
-		if (apply_redirections(cmd->redirs) == ERROR)
-		{
-			free_shell(sh);
-			exit(EXIT_FAILURE);
-		}
-		path = find_path(cmd->argv[0], sh->envp);
-		if (!path)
-			handle_command_error(sh, cmd, 127);
-		execve(path, cmd->argv, sh->envp);
-		free(path);
-		handle_command_error(sh, cmd, 126);
-	}
+		child_process_exec(cmd, sh);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		sh->last_status = WEXITSTATUS(status);

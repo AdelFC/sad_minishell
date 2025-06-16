@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/15 15:52:30 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 10:16:20 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -374,9 +374,9 @@ char					*get_env_value(t_env *env_list, const char *key);
 /*split_commands.c*/
 t_token					**split_commands(t_token *tokens);
 void					free_cmd_splits(t_token **cmd_splits);
+
 /*clean_cmd_list.c*/
 void					clean_leading_empty_argv(t_command *cmd);
-
 
 /*build_commands.c*/
 t_command				*build_commands_from_splits(t_token **cmd_splits);
@@ -432,6 +432,11 @@ void					free_commands(t_command *cmds);
 /*handle_command_error.c*/
 void					handle_command_error(t_shell *sh, t_command *cmd,
 							int err);
+int						is_shell_script(const char *path);
+int						is_binary_executable(const char *path);
+int						is_executable(const char *path);
+int						is_dir(const char *path, t_shell *data);
+int						is_in_charset(char c, const char *charset);
 
 /*exec.c*/
 int						exec_commands(t_shell *sh);

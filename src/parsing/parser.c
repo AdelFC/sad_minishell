@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:04:05 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/15 15:51:43 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 09:53:07 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ int	parse_line(char *line, t_shell *sh)
 	if (handle_split_and_build(clean, sh, tokens, &cmd_list) == ERROR)
 		return (ERROR);
 	sh->cmds = cmd_list;
-    clean_leading_empty_argv(sh->cmds);
-    sh->tokens = NULL;
+	clean_leading_empty_argv(sh->cmds);
+	sh->tokens = NULL;
 	free(clean);
 	return (SUCCESS);
 }
