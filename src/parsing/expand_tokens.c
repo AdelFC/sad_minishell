@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:13:57 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/15 16:14:10 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:33:01 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,11 @@ static char	*get_var_value(t_expand_tok *v)
 
 void	handle_dollar_sign(t_expand_tok *v, char **result)
 {
+	int		cond;
 	char	*var_value;
 
 	v->i++;
+	cond = v->str[v->i] == '?';
 	var_value = get_var_value(v);
 	if (!var_value && !(ft_isalpha(v->str[v->i - 1]) || v->str[v->i - 1] == '_'
 			|| v->str[v->i - 1] == '?'))
@@ -89,4 +91,6 @@ void	handle_dollar_sign(t_expand_tok *v, char **result)
 	if (!var_value)
 		var_value = ft_strdup("");
 	*result = join_and_free(*result, ft_strdup(var_value));
+	if (cond)
+		free(var_value);
 }

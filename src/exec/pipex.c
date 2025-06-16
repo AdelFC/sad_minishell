@@ -6,17 +6,35 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:10:11 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 11:39:05 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:33:32 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	process_first(t_command *cmd, t_shell *sh)
+static void	cavaouquoi(t_command *cmd, t_shell *sh)
 {
 	char	*path;
-	int		status;
 	char	**envp;
+
+	path = find_path(cmd->argv[0], sh->env);
+	envp = NULL;
+	if (!path)
+	{
+		ft_printf_error(ERR_MINISHELL_CMD_NOT_FOUND, cmd->argv[0]);
+		exit(127);
+	}
+	envp = env_list_to_array(sh->env);
+	execve(path, cmd->argv, envp);
+	free_array(envp);
+	ft_printf_error(ERR_MINISHELL_PERMISSION, cmd->argv[0]);
+	free(path);
+	exit(126);
+}
+
+void	process_first(t_command *cmd, t_shell *sh)
+{
+	int	status;
 
 	if (dup2(cmd->fd[1], STDOUT_FILENO) == -1)
 	{
@@ -37,24 +55,13 @@ void	process_first(t_command *cmd, t_shell *sh)
 		free_shell(sh);
 		exit((unsigned char)status);
 	}
-	path = find_path(cmd->argv[0], sh->env);
-	if (!path)
-	{
-		ft_printf_error(ERR_MINISHELL_CMD_NOT_FOUND, cmd->argv[0]);
-		exit(127);
-	}
-	envp = env_list_to_array(sh->env);
-	execve(path, cmd->argv, envp);
-	free_array(envp);
-	ft_printf_error(ERR_MINISHELL_PERMISSION, cmd->argv[0]);
-	free(path);
-	exit(126);
+	cavaouquoi(cmd, sh);
 }
 
 void	setup_pipes(t_command *cmd, int prev_fd)
 {
-	if (dup2(prev_fd, STDIN_FILENO) == -1 || dup2(cmd->fd[1], STDOUT_FILENO) ==
-		-1)
+	if (dup2(prev_fd, STDIN_FILENO) == -1
+		|| dup2(cmd->fd[1], STDOUT_FILENO) == -1)
 	{
 		ft_printf_error(ERR_DUP2, strerror(errno));
 		exit(EXIT_FAILURE);
@@ -66,9 +73,7 @@ void	setup_pipes(t_command *cmd, int prev_fd)
 
 void	process_middle(int prev_fd, t_command *cmd, t_shell *sh)
 {
-	char	*path;
-	int		status;
-	char	**envp;
+	int	status;
 
 	setup_pipes(cmd, prev_fd);
 	signal(SIGPIPE, sigpipe_handler);
@@ -83,25 +88,12 @@ void	process_middle(int prev_fd, t_command *cmd, t_shell *sh)
 		free_shell(sh);
 		exit((unsigned char)status);
 	}
-	path = find_path(cmd->argv[0], sh->env);
-	if (!path)
-	{
-		ft_printf_error(ERR_MINISHELL_CMD_NOT_FOUND, cmd->argv[0]);
-		exit(127);
-	}
-	envp = env_list_to_array(sh->env);
-	execve(path, cmd->argv, envp);
-	free_array(envp);
-	ft_printf_error(ERR_MINISHELL_PERMISSION, cmd->argv[0]);
-	free(path);
-	exit(126);
+	cavaouquoi(cmd, sh);
 }
 
 void	process_last(int prev_fd, t_command *cmd, t_shell *sh)
 {
-	char	*path;
-	int		status;
-	char	**envp;
+	int	status;
 
 	if (dup2(prev_fd, STDIN_FILENO) == -1)
 	{
@@ -121,18 +113,7 @@ void	process_last(int prev_fd, t_command *cmd, t_shell *sh)
 		free_shell(sh);
 		exit((unsigned char)status);
 	}
-	path = find_path(cmd->argv[0], sh->env);
-	if (!path)
-	{
-		ft_printf_error(ERR_MINISHELL_CMD_NOT_FOUND, cmd->argv[0]);
-		exit(127);
-	}
-	envp = env_list_to_array(sh->env);
-	execve(path, cmd->argv, envp);
-	free_array(envp);
-	ft_printf_error(ERR_MINISHELL_PERMISSION, cmd->argv[0]);
-	free(path);
-	exit(126);
+	cavaouquoi(cmd, sh);
 }
 
 void	ft_pipe(t_shell *sh, int *last_status)

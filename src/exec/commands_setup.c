@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/25 12:27:29 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/14 11:12:22 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:32:31 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 static int	ft_file(const char *file)
 {
-    int	fd;
+	int	fd;
 
-    fd = open(file, O_RDONLY);
-    if (fd == -1)
-        return (SUCCESS);
-    close(fd);
-    return (ERROR);
+	fd = open(file, O_RDONLY);
+	if (fd == -1)
+		return (SUCCESS);
+	close(fd);
+	return (ERROR);
 }
 
 static void	free_redirs(t_redir *redir)
@@ -43,7 +43,7 @@ static void	free_redirs(t_redir *redir)
 		cur = next;
 	}
 	if (ft_file(".heredoc.tmp") == SUCCESS)
-        unlink(".heredoc.tmp");
+		unlink(".heredoc.tmp");
 }
 
 void	free_commands(t_command *cmds)
