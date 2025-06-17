@@ -54,38 +54,35 @@ int	is_executable(const char *path)
 	return (0);
 }
 
-static int	is_dir_handle_error(const char *path, t_shell *data)
-{
-	int	temp;
-
-	temp = open(path, O_RDONLY);
-	if (errno == EACCES)
-	{
-		data->last_status = 126;
-		return (126);
-	}
-	data->last_status = 127;
-	return (127);
-}
-
 int	is_dir(const char *path, t_shell *data)
 {
+	int	temp;
 	DIR	*fd;
-	int	ret;
 
 	fd = opendir(path);
 	if (fd == NULL)
 	{
-		ret = is_dir_handle_error(path, data);
-		if (ret == 127)
+		temp = open(path, O_RDONLY);
+		if (errno == EACCES)
 		{
-			write(2, " ", 1);
-			ft_putendl_fd(strerror(errno), 2);
+			data->last_status = 126;
+			return (126);
 		}
-		return (ret);
+		else
+		{
+			data->last_status = 127;
+			return (127);
+		}
+		write(2, " ", 1);
+		ft_putendl_fd(strerror(errno), 2);
+		if (temp != -1)
+			close(temp);
 	}
-	data->last_status = 126;
-	ft_putendl_fd(" Is a directory\n", 2);
-	closedir(fd);
-	return (126);
+	else
+	{
+		data->last_status = 126;
+		ft_putendl_fd(" Is a directory\n", 2);
+		closedir(fd);
+		return (126);
+	}
 }
