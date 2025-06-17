@@ -28,24 +28,24 @@ static int	is_n(const char *s)
 
 int	ft_echo(char **argv)
 {
-	int	i;
-	int	new;
+    int	i;
+    int	new;
 
-	i = 1;
-	new = 1;
-	while (argv[i] && is_n(argv[i]) == SUCCESS)
-	{
-		new = 0;
-		i++;
-	}
-	while (argv[i])
-	{
-		if (i > 1 && (new || i > 2 || is_n(argv[1]) != SUCCESS))
-			ft_printf(" ");
-		ft_printf("%s", argv[i]);
-		i++;
-	}
-	if (new)
-		ft_printf("\n");
-	return (SUCCESS);
+    i = 1;
+    new = 1;
+    while (argv[i] && is_n(argv[i]) == SUCCESS)
+    {
+        new = 0;
+        i++;
+    }
+    while (argv[i])
+    {
+        if (i > 1 && argv[i - 1][0] != '-' && argv[i - 1][1] != 'n')
+            ft_printf(" ");
+        ft_printf("%s", argv[i]);
+        i++;
+    }
+    if (new)
+        ft_printf("\n");
+    return (SUCCESS);
 }

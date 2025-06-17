@@ -114,8 +114,8 @@ int	main(int argc, char **argv, char **envp)
 
 	if (init_basics(argc, argv) == ERROR)
 		return (ERROR);
-	if (!isatty(0) || !isatty(1))
-		return (printf("Erreur\n"), 1);
+	// if (!isatty(0) || !isatty(1))
+	// 	return (printf("Erreur\n"), 1);
 	sh = init_shell_and_signals(envp);
 	if (!sh)
 		return (ERROR);
