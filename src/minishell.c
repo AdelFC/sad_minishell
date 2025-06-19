@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:46 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 12:47:01 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/19 13:35:15 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,15 +121,17 @@ int	main(int argc, char **argv, char **envp)
 		return (ERROR);
 	while (1)
 	{
-		line = init_prompt();
-		if (g_sig)
-		{
-			sh->last_status = g_sig;
-			g_sig = 0;
-		}
-		if (!line || process_line(line, sh) == ERROR)
-			break ;
-	}
+        // Avant de lire le prompt, réactive le handler custom
+        init_signals();
+        line = init_prompt();
+        if (g_sig)
+        {
+            sh->last_status = g_sig;
+            g_sig = 0;
+        }
+        if (!line || process_line(line, sh) == ERROR)
+            break ;
+    }
 	last_status = sh->last_status;
 	free_shell(sh);
 	return (last_status);
