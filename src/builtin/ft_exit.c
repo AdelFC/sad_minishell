@@ -6,7 +6,7 @@
 /*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:16 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/13 11:28:50 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/19 12:05:27 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,19 +83,18 @@ int	ft_exit(char **argv, t_shell *sh)
 
 	code = 0;
 	argc = count_exit_args(argv);
+	if (argc >= 1 && is_numeric(argv[1]) == ERROR)
+	{
+		ft_printf_error("minishell: exit: %s: numeric argument required\n", argv[1]);
+		free_shell(sh);
+		exit(2);
+	}
 	if (argc > 1)
 		return (ft_printf_error(ERR_EXIT_TOO_MANY_ARGS), 1);
 	if (argc == 1)
-	{
-		if (is_numeric(argv[1]) == ERROR)
-		{
-			ft_printf_error("minishell: exit: %s: numeric argument required\n",
-				argv[1]);
-			free_shell(sh);
-			exit(2);
-		}
 		code = ft_atoll(argv[1]);
-	}
+	else
+		code = sh->last_status;
 	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO) && getppid() != 1)
 		printf("exit\n");
 	free_shell(sh);
