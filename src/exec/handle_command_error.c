@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 16:14:26 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 10:15:47 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/19 10:52:11 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,15 +64,9 @@ int	is_dir(const char *path, t_shell *data)
 	{
 		temp = open(path, O_RDONLY);
 		if (errno == EACCES)
-		{
-			data->last_status = 126;
-			return (126);
-		}
+			return (data->last_status = 126, 126);
 		else
-		{
-			data->last_status = 127;
-			return (127);
-		}
+			return (data->last_status = 127, 127);
 		write(2, " ", 1);
 		ft_putendl_fd(strerror(errno), 2);
 		if (temp != -1)
