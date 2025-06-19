@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_tokens.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:13:57 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 12:33:01 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/19 11:44:39 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,11 @@ void	handle_dollar_sign(t_expand_tok *v, char **result)
 {
 	int		cond;
 	char	*var_value;
+	char	*to_join;
+	int		allocated;
 
+	to_join = NULL;
+	allocated = 0;
 	v->i++;
 	cond = v->str[v->i] == '?';
 	var_value = get_var_value(v);
@@ -89,8 +93,18 @@ void	handle_dollar_sign(t_expand_tok *v, char **result)
 		return ;
 	}
 	if (!var_value)
-		var_value = ft_strdup("");
-	*result = join_and_free(*result, ft_strdup(var_value));
-	if (cond)
+	{
+		to_join = ft_strdup("");
+		allocated = 1;
+	}
+	else
+	{
+		to_join = ft_strdup(var_value);
+		allocated = 1;
+	}
+	if (!to_join)
+		return ;
+	*result = join_and_free(*result, to_join);
+	if (cond || (!var_value && allocated))
 		free(var_value);
 }

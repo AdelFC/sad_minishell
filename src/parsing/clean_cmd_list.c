@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clean_cmd_list.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
+/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 15:51:27 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 09:53:44 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/19 11:35:38 by barnaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,11 @@ void	clean_leading_empty_argv(t_command *cmd)
 	{
 		i = 0;
 		while (cmd->argv && cmd->argv[i] && cmd->argv[i][0] == 0)
+		{
+			free(cmd->argv[i]);
+			cmd->argv[i] = NULL;
 			i++;
+		}
 		if (i > 0 && cmd->argv)
 		{
 			j = 0;
