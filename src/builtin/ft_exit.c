@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:16 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/19 12:05:27 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/20 10:17:03 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	ft_exit(char **argv, t_shell *sh)
 	argc = count_exit_args(argv);
 	if (argc >= 1 && is_numeric(argv[1]) == ERROR)
 	{
-		ft_printf_error("minishell: exit: %s: numeric argument required\n", argv[1]);
+		ft_printf_error(ERR_EXIT_NUM_ARG, argv[1]);
 		free_shell(sh);
 		exit(2);
 	}

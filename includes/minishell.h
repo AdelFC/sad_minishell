@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 21:36:58 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/16 12:45:19 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/20 10:17:42 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@
 # define ERR_NO_ENV "minishell: no env detected\n"
 
 # define ERR_EXIT_TOO_MANY_ARGS "exit: too many arguments\n"
-# define ERR_EXIT_NUM_ARG "exit: numeric argument required\n"
+# define ERR_EXIT_NUM_ARG "exit: %s: numeric argument required\n"
 
 # define ERR_EXPORT_VALID_ID "export: %s: not a valid identifier\n"
 
@@ -359,6 +359,7 @@ typedef struct s_expand_tok
 	char				*res;
 }						t_expand_tok;
 
+char					*get_to_join(const char *var_value, int *allocated);
 void					expand_tokens(t_token **tokens, t_env *env_list,
 							int last_status);
 void					expand_token_value(t_token *token, t_env *env_list,
@@ -495,5 +496,7 @@ void					handle_sigquit(int sig);
 void					init_signals(void);
 void					b_sig(void);
 void					sigpipe_handler(int sig);
+void					setup_signals_parent(void);
+void					restore_signals_parent(void);
 
 #endif

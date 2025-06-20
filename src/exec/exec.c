@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:39:36 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/19 13:44:30 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/20 10:02:20 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,22 +34,6 @@ static void	child_process_exec(t_command *cmd, t_shell *sh)
 	handle_command_error(sh, cmd, 126);
 }
 
-static void	setup_signals_child(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-}
-
-static void	setup_signals_parent(void)
-{
-	signal(SIGINT, SIG_IGN);
-}
-
-static void	restore_signals_parent(void)
-{
-	signal(SIGINT, handle_sigint);
-}
-
 static void	update_status_from_wait(int status, t_shell *sh)
 {
 	if (WIFEXITED(status))
@@ -61,18 +45,18 @@ static void	update_status_from_wait(int status, t_shell *sh)
 int	exec_single_external(t_command *cmd, t_shell *sh)
 {
 	pid_t	pid;
-	int		status = 0;
+	int		status;
 
+	status = 0;
 	pid = fork();
 	if (pid < 0)
 	{
-		ft_printf_error("minishell: fork failed\n");
 		sh->last_status = 1;
-		return (1);
+		return (ft_printf_error("minishell: fork failed\n"), 1);
 	}
 	else if (pid == 0)
 	{
-		setup_signals_child();
+		b_sig();
 		child_process_exec(cmd, sh);
 	}
 	else

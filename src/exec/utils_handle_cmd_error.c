@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_handle_cmd_error.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 10:12:48 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/19 13:30:52 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/20 09:58:13 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	handle_command_error(t_shell *sh, t_command *cmd, int err)
 		err = is_dir(cmd->argv[0], sh);
 	if (err == 127)
 		ft_printf_error(ERR_MINISHELL_CMD_NOT_FOUND, cmd->argv[0]);
-	
 	free_shell(sh);
 	exit(err);
 }

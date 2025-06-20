@@ -30,7 +30,7 @@ EXEC_FILES = commands_setup.c utils_handle_cmd_error.c \
 		redirections.c heredoc.c pipex.c exec.c path.c \
 		handle_command_error.c pipex_utils.c exec_utils.c \
 		exec_utils2.c new_env.c pipexfirst.c
-SIGNAL_FILES = signal.c
+SIGNAL_FILES = signal.c signal_u.c
 BUILTIN_FILES = exec_builtin.c ft_cd.c ft_echo.c ft_env.c \
 		ft_exit.c ft_export.c ft_pwd.c ft_unset.c ft_cd_env.c \
 		ft_export_utils.c

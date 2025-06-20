@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_tokens.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: barnaud <barnaud@student.42.fr>            +#+  +:+       +#+        */
+/*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:13:57 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/19 11:44:39 by barnaud          ###   ########.fr       */
+/*   Updated: 2025/06/20 10:12:10 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,16 +92,7 @@ void	handle_dollar_sign(t_expand_tok *v, char **result)
 		handle_dollar_special(v, result);
 		return ;
 	}
-	if (!var_value)
-	{
-		to_join = ft_strdup("");
-		allocated = 1;
-	}
-	else
-	{
-		to_join = ft_strdup(var_value);
-		allocated = 1;
-	}
+	to_join = get_to_join(var_value, &allocated);
 	if (!to_join)
 		return ;
 	*result = join_and_free(*result, to_join);
