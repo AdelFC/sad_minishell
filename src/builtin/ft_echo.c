@@ -6,7 +6,7 @@
 /*   By: afodil-c <afodil-c@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 15:20:28 by afodil-c          #+#    #+#             */
-/*   Updated: 2025/06/20 09:47:52 by afodil-c         ###   ########.fr       */
+/*   Updated: 2025/06/20 10:36:52 by afodil-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,26 +26,29 @@ static int	is_n(const char *s)
 	return (ERROR);
 }
 
-int	ft_echo(char **argv)
+int    ft_echo(char **argv)
 {
-	int	i;
-	int	new;
+    int    i;
+    int    new;
+    int    first;
 
-	i = 1;
-	new = 1;
-	while (argv[i] && is_n(argv[i]) == SUCCESS)
-	{
-		new = 0;
-		i++;
-	}
-	while (argv[i])
-	{
-		if (i > 1 && argv[i - 1][0] != '-' && argv[i - 1][1] != 'n')
-			ft_printf(" ");
-		ft_printf("%s", argv[i]);
-		i++;
-	}
-	if (new)
-		ft_printf("\n");
-	return (SUCCESS);
+    i = 1;
+    new = 1;
+    while (argv[i] && is_n(argv[i]) == SUCCESS)
+    {
+        new = 0;
+        i++;
+    }
+    first = 1;
+    while (argv[i])
+    {
+        if (!first)
+            ft_printf(" ");
+        ft_printf("%s", argv[i]);
+        first = 0;
+        i++;
+    }
+    if (new)
+        ft_printf("\n");
+    return (SUCCESS);
 }
